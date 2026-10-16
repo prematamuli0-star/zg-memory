@@ -1,5 +1,7 @@
 
 /* ZG Memory — complete app.js */
+"use strict";
+
 let sb = null;
 let currentUser = null;
 let isAdmin = false;
@@ -7,6 +9,7 @@ let songs = [];
 let currentView = "home";
 let authMode = "signin";
 let deferredInstall = null;
+let currentSongId = null;
 
 const $ = id => document.getElementById(id);
 const FAV_KEY = "zg-memory-favorites-v1";
@@ -27,19 +30,20 @@ function saveFavorites() {
 }
 
 function updateFavCount() {
-  $("favCount").textContent = favorites.length;
-  $("favTabCount").textContent = favorites.length;
+  if ($("favCount")) $("favCount").textContent = favorites.length;
+  if ($("favTabCount")) $("favTabCount").textContent = favorites.length;
 }
 
 function toast(message) {
   const t = $("toast");
+  if (!t) return;
   t.textContent = message;
   t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2600);
+  setTimeout(() => t.classList.remove("show"), 3000);
 }
 
 function setStatus(message) {
-  $("status").textContent = message;
+  if ($("status")) $("status").textContent = message;
 }
 
 function safeText(value) {
@@ -60,19 +64,17 @@ function coverOf(song) {
   return song.cover_url || fallbackCover();
 }
 
-function artistOf(song) {
-  return song.artist || "Unknown artist";
-}
-
 function metaOf(song) {
-  return [artistOf(song), song.album, song.year]
-    .filter(Boolean)
-    .join(" • ");
+  return [
+    song.artist || "Unknown artist",
+    song.album,
+    song.year
+  ].filter(Boolean).join(" • ");
 }
 
-/* Filter songs and preserve serial numbers in displayed order */
+/* SONG LIST */
 function visibleSongs() {
-  const query = $("searchInput").value.trim().toLowerCase();
+  const query = ($("searchInput")?.value || "").trim().toLowerCase();
 
   let list = songs.filter(song =>
     [song.title, song.artist, song.album, song.year]
@@ -83,13 +85,15 @@ function visibleSongs() {
   );
 
   if (currentView === "favorites") {
-    list = list.filter(song => favorites.includes(song.id));
+    list = list.filter(song => favorites.includes(String(song.id)));
   }
 
   return list;
 }
 
 function render() {
+  if (!$("songList")) return;
+
   const list = visibleSongs();
   const host = $("songList");
 
@@ -99,30 +103,32 @@ function render() {
     favorites: ["SAVED FOR LATER", "Your favorites"]
   };
 
-  $("sectionEyebrow").textContent = titles[currentView][0];
-  $("sectionTitle").textContent = titles[currentView][1];
+  const heading = titles[currentView] || titles.home;
 
-  $("songCount").textContent =
-    `${list.length} song${list.length === 1 ? "" : "s"}`;
+  if ($("sectionEyebrow")) $("sectionEyebrow").textContent = heading[0];
+  if ($("sectionTitle")) $("sectionTitle").textContent = heading[1];
+
+  if ($("songCount")) {
+    $("songCount").textContent =
+      `${list.length} song${list.length === 1 ? "" : "s"}`;
+  }
 
   updateFavCount();
 
   host.innerHTML = list.map((song, index) => `
     <article class="song-card">
-      <span class="song-number" aria-label="Track number ${index + 1}">
+      <span class="song-number">
         ${String(index + 1).padStart(2, "0")}
       </span>
 
-      <button class="song-main"
-        type="button"
+      <button class="song-main" type="button"
         data-play="${safeText(song.id)}"
         aria-label="Play ${safeText(song.title)}">
-
         <img class="song-cover"
           src="${safeText(coverOf(song))}"
           alt=""
           loading="lazy"
-          onerror="this.src='./icon.svg'">
+          onerror="this.onerror=null;this.src='./icon.svg'">
 
         <span class="song-copy">
           <h3>${safeText(song.title)}</h3>
@@ -130,33 +136,39 @@ function render() {
         </span>
       </button>
 
-      <button class="play-button"
-        type="button"
+      <button class="play-button" type="button"
         data-play="${safeText(song.id)}"
         aria-label="Play song">▶</button>
 
-      <button class="heart-button ${favorites.includes(song.id) ? "favorited" : ""}"
+      <button class="heart-button ${favorites.includes(String(song.id)) ? "favorited" : ""}"
         type="button"
         data-fav="${safeText(song.id)}"
         aria-label="Toggle favorite">
-        ${favorites.includes(song.id) ? "♥" : "♡"}
+        ${favorites.includes(String(song.id)) ? "♥" : "♡"}
       </button>
     </article>
   `).join("");
 
-  $("emptyState").classList.toggle("hidden", list.length > 0);
+  if ($("emptyState")) {
+    $("emptyState").classList.toggle("hidden", list.length > 0);
+  }
+
   host.classList.toggle("hidden", list.length === 0);
 
   document.querySelectorAll("[data-view]").forEach(button => {
     button.classList.toggle("active", button.dataset.view === currentView);
   });
 
-  $("adminCard").classList.toggle("hidden", !isAdmin);
+  if ($("adminCard")) {
+    $("adminCard").classList.toggle("hidden", !isAdmin);
+  }
+
   renderAdminList();
 }
 
 function renderAdminList() {
   const host = $("adminSongList");
+  if (!host) return;
 
   if (!isAdmin) {
     host.innerHTML = "";
@@ -165,28 +177,26 @@ function renderAdminList() {
 
   host.innerHTML = songs.map((song, index) => `
     <div class="admin-song-row">
-      <span class="song-number">
-        ${String(index + 1).padStart(2, "0")}
-      </span>
+      <span class="song-number">${String(index + 1).padStart(2, "0")}</span>
 
-      <img src="${safeText(coverOf(song))}"
-        alt=""
-        onerror="this.src='./icon.svg'">
+      <img src="${safeText(coverOf(song))}" alt=""
+        onerror="this.onerror=null;this.src='./icon.svg'">
 
       <div class="song-copy">
         <h3>${safeText(song.title)}</h3>
         <p>${safeText(metaOf(song))}</p>
       </div>
 
-      <button class="delete-button"
-        type="button"
-        data-delete="${safeText(song.id)}">
-        Delete
-      </button>
+      <button class="edit-button" type="button"
+        data-edit="${safeText(song.id)}">Edit</button>
+
+      <button class="delete-button" type="button"
+        data-delete="${safeText(song.id)}">Delete</button>
     </div>
-  `).join("") || "<p>No songs uploaded yet.</p>";
+  `).join("") || '<p class="muted">No songs uploaded yet.</p>';
 }
 
+/* LOAD SONGS */
 async function loadSongs() {
   if (!sb) {
     setStatus("Setup needed: check config.js.");
@@ -204,23 +214,21 @@ async function loadSongs() {
   if (error) {
     console.error(error);
     setStatus("Could not load music. Check Supabase setup and table policies.");
-    songs = [];
-  } else {
-    songs = data || [];
-    setStatus(songs.length
-      ? "Tap a song to listen."
-      : "Your collection is ready for its first song.");
+    return;
   }
 
+  songs = data || [];
+  setStatus(songs.length ? "Tap a song to listen." : "No songs uploaded yet.");
   render();
 }
 
+/* MUSIC PLAYER */
 async function playSong(id) {
-  const song = songs.find(item => item.id === id);
-  if (!song) return;
+  const song = songs.find(item => String(item.id) === String(id));
+  if (!song || !sb) return;
 
-  if (!sb || !song.audio_path) {
-    toast("This song has no audio file yet.");
+  if (!song.audio_path) {
+    toast("This song has no audio file.");
     return;
   }
 
@@ -228,19 +236,35 @@ async function playSong(id) {
     .from("music-audio")
     .getPublicUrl(song.audio_path);
 
+  if (!data?.publicUrl) {
+    toast("Could not find the audio URL.");
+    return;
+  }
+
+  currentSongId = song.id;
+
   $("playerCover").src = coverOf(song);
   $("playerTitle").textContent = song.title;
   $("playerArtist").textContent = metaOf(song);
 
   const audio = $("audio");
   audio.src = data.publicUrl;
+
   $("miniPlayer").classList.remove("hidden");
 
   try {
     await audio.play();
   } catch {
-    toast("Tap Play in the audio controls to start.");
+    toast("Tap Play to start the song.");
   }
+}
+
+function openFullPlayer() {
+  $("miniPlayer")?.classList.add("player-expanded");
+}
+
+function closeFullPlayer() {
+  $("miniPlayer")?.classList.remove("player-expanded");
 }
 
 function setView(view) {
@@ -249,19 +273,17 @@ function setView(view) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-/* Main buttons */
+/* BUTTON EVENTS */
 document.addEventListener("click", async event => {
-  const playButton = event.target.closest("[data-play]");
-
-  if (playButton) {
-    await playSong(playButton.dataset.play);
+  const play = event.target.closest("[data-play]");
+  if (play) {
+    await playSong(play.dataset.play);
     return;
   }
 
-  const favButton = event.target.closest("[data-fav]");
-
-  if (favButton) {
-    const id = favButton.dataset.fav;
+  const fav = event.target.closest("[data-fav]");
+  if (fav) {
+    const id = String(fav.dataset.fav);
 
     favorites = favorites.includes(id)
       ? favorites.filter(item => item !== id)
@@ -272,37 +294,81 @@ document.addEventListener("click", async event => {
     return;
   }
 
-  const deleteButton = event.target.closest("[data-delete]");
-
-  if (deleteButton) {
-    await deleteSong(deleteButton.dataset.delete);
+  const edit = event.target.closest("[data-edit]");
+  if (edit) {
+    await editSong(edit.dataset.edit);
     return;
   }
 
-  const viewButton = event.target.closest("[data-view]");
-
-  if (viewButton) {
-    setView(viewButton.dataset.view);
+  const del = event.target.closest("[data-delete]");
+  if (del) {
+    await deleteSong(del.dataset.delete);
+    return;
   }
+
+  const view = event.target.closest("[data-view]");
+  if (view) setView(view.dataset.view);
 });
 
-$("searchInput").addEventListener("input", render);
+$("searchInput")?.addEventListener("input", render);
 
-$("clearSearch").addEventListener("click", () => {
+$("clearSearch")?.addEventListener("click", () => {
   $("searchInput").value = "";
   render();
   $("searchInput").focus();
 });
 
-$("headerFav").addEventListener("click", () => setView("favorites"));
+$("headerFav")?.addEventListener("click", () => setView("favorites"));
 
-$("searchNav").addEventListener("click", () => {
+$("searchNav")?.addEventListener("click", () => {
   $("searchInput").focus();
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
+/* FULL PLAYER: tap banner to expand */
+$("miniPlayer")?.addEventListener("click", event => {
+  if (event.target.closest("#closePlayer")) return;
+  if (event.target.closest("audio")) return;
+  if (event.target.closest("#back10, #forward10")) return;
+
+  openFullPlayer();
+});
+
+$("closePlayer")?.addEventListener("click", event => {
+  event.stopPropagation();
+
+  if ($("miniPlayer").classList.contains("player-expanded")) {
+    closeFullPlayer();
+  } else {
+    $("audio").pause();
+    $("miniPlayer").classList.add("hidden");
+  }
+});
+
+/* SKIP BACK / FORWARD 10 SECONDS */
+function skipAudio(seconds) {
+  const audio = $("audio");
+  if (!audio || !Number.isFinite(audio.duration)) return;
+
+  audio.currentTime = Math.max(
+    0,
+    Math.min(audio.duration, audio.currentTime + seconds)
+  );
+}
+
+$("back10")?.addEventListener("click", event => {
+  event.stopPropagation();
+  skipAudio(-10);
+});
+
+$("forward10")?.addEventListener("click", event => {
+  event.stopPropagation();
+  skipAudio(10);
+});
+
+/* PROFILE AND AUTH */
 function openProfile() {
-  $("profileCard").scrollIntoView({
+  $("profileCard")?.scrollIntoView({
     behavior: "smooth",
     block: "center"
   });
@@ -310,20 +376,14 @@ function openProfile() {
   if (!currentUser) openAuth();
 }
 
-$("profileTop").addEventListener("click", openProfile);
-$("profileNav").addEventListener("click", openProfile);
+$("profileTop")?.addEventListener("click", openProfile);
+$("profileNav")?.addEventListener("click", openProfile);
 
-$("profileAction").addEventListener("click", () => {
+$("profileAction")?.addEventListener("click", () => {
   if (currentUser) signOut();
   else openAuth();
 });
 
-$("closePlayer").addEventListener("click", () => {
-  $("audio").pause();
-  $("miniPlayer").classList.add("hidden");
-});
-
-/* Login and signup */
 function openAuth() {
   if (!sb) {
     toast("Check Supabase setup in config.js.");
@@ -334,7 +394,7 @@ function openAuth() {
   $("authDialog").showModal();
 }
 
-$("toggleAuth").addEventListener("click", () => {
+$("toggleAuth")?.addEventListener("click", () => {
   authMode = authMode === "signin" ? "signup" : "signin";
 
   $("authTitle").textContent =
@@ -354,9 +414,8 @@ $("toggleAuth").addEventListener("click", () => {
   $("authMessage").textContent = "";
 });
 
-$("authForm").addEventListener("submit", async event => {
+$("authForm")?.addEventListener("submit", async event => {
   event.preventDefault();
-
   if (!sb) return;
 
   const email = $("authEmail").value.trim();
@@ -365,37 +424,36 @@ $("authForm").addEventListener("submit", async event => {
   $("authSubmit").disabled = true;
   $("authMessage").textContent = "Please wait…";
 
-  let result;
+  try {
+    const result = authMode === "signin"
+      ? await sb.auth.signInWithPassword({ email, password })
+      : await sb.auth.signUp({ email, password });
 
-  if (authMode === "signin") {
-    result = await sb.auth.signInWithPassword({ email, password });
-  } else {
-    result = await sb.auth.signUp({ email, password });
+    if (result.error) {
+      $("authMessage").textContent = result.error.message;
+      return;
+    }
+
+    if (authMode === "signup" && !result.data.session) {
+      $("authMessage").textContent =
+        "Check your email to confirm your account, then sign in.";
+      return;
+    }
+
+    $("authDialog").close();
+    toast("Signed in successfully.");
+    await refreshSession();
+  } catch (error) {
+    $("authMessage").textContent = error.message || "Authentication failed.";
+  } finally {
+    $("authSubmit").disabled = false;
   }
-
-  $("authSubmit").disabled = false;
-
-  if (result.error) {
-    $("authMessage").textContent = result.error.message;
-    return;
-  }
-
-  if (authMode === "signup" && !result.data.session) {
-    $("authMessage").textContent =
-      "Check your email to confirm your account, then sign in.";
-    return;
-  }
-
-  $("authDialog").close();
-  toast("Signed in successfully.");
-  await refreshSession();
 });
 
 async function signOut() {
   if (!sb) return;
 
   const { error } = await sb.auth.signOut();
-
   if (error) {
     toast(error.message);
     return;
@@ -423,7 +481,7 @@ async function refreshSession() {
 
     $("profileTitle").textContent = currentUser.email || "Your profile";
     $("profileText").textContent = isAdmin
-      ? "Signed in as administrator. You can upload and delete songs."
+      ? "Signed in as administrator. You can manage songs."
       : "Signed in. Favorites are saved on this device.";
 
     $("profileAction").textContent = "Sign out";
@@ -431,14 +489,13 @@ async function refreshSession() {
     $("profileTitle").textContent = "Profile";
     $("profileText").textContent =
       "Sign in to access your profile. Favorites are saved on this device.";
-
     $("profileAction").textContent = "Sign in";
   }
 
   render();
 }
 
-/* Upload songs */
+/* UPLOAD SONGS */
 async function uploadSong(event) {
   event.preventDefault();
 
@@ -450,7 +507,7 @@ async function uploadSong(event) {
   const title = $("songTitle").value.trim();
   const artist = $("songArtist").value.trim();
   const album = $("songAlbum").value.trim();
-  const year = $("songYear").value.trim();
+  const yearText = $("songYear").value.trim();
   const cover = $("coverFile").files[0];
   const audio = $("audioFile").files[0];
 
@@ -459,13 +516,8 @@ async function uploadSong(event) {
     return;
   }
 
-  if (cover.size > 5 * 1024 * 1024) {
-    toast("Cover must be 5 MB or smaller.");
-    return;
-  }
-
-  if (audio.size > 50 * 1024 * 1024) {
-    toast("Audio must be 50 MB or smaller.");
+  if (cover.size > 5 * 1024 * 1024 || audio.size > 50 * 1024 * 1024) {
+    toast("Cover limit: 5 MB. Audio limit: 50 MB.");
     return;
   }
 
@@ -474,10 +526,15 @@ async function uploadSong(event) {
     return;
   }
 
-  if (![
-    "audio/mpeg", "audio/mp4", "audio/ogg", "audio/wav", "audio/x-wav"
-  ].includes(audio.type)) {
-    toast("Choose an MP3, M4A, OGG or WAV file.");
+  if (!/\.(mp3|m4a|ogg|wav|aac)$/i.test(audio.name)) {
+    toast("Choose an MP3, M4A, OGG, WAV or AAC file.");
+    return;
+  }
+
+  const year = yearText ? Number(yearText) : null;
+  if (year !== null &&
+      (!Number.isInteger(year) || year < 1000 || year > 9999)) {
+    toast("Enter a valid year.");
     return;
   }
 
@@ -506,7 +563,7 @@ async function uploadSong(event) {
       .from("music-audio")
       .upload(audioPath, audio, {
         upsert: false,
-        contentType: audio.type
+        contentType: audio.type || "audio/mpeg"
       });
 
     if (audioUpload.error) {
@@ -518,20 +575,20 @@ async function uploadSong(event) {
       .from("music-covers")
       .getPublicUrl(coverPath);
 
-    const insertResult = await sb.from("songs").insert({
+    const result = await sb.from("songs").insert({
       title,
       artist,
       album: album || null,
-      year: year ? Number(year) : null,
+      year,
       cover_url: coverData.publicUrl,
       cover_path: coverPath,
       audio_path: audioPath
     });
 
-    if (insertResult.error) {
+    if (result.error) {
       await sb.storage.from("music-covers").remove([coverPath]);
       await sb.storage.from("music-audio").remove([audioPath]);
-      throw insertResult.error;
+      throw result.error;
     }
 
     $("uploadForm").reset();
@@ -539,16 +596,125 @@ async function uploadSong(event) {
     await loadSongs();
   } catch (error) {
     console.error(error);
-    toast("Upload failed: " + (error.message || "Check Supabase settings."));
+    toast("Upload failed: " + (error.message || "Check Supabase policies."));
   } finally {
     button.disabled = false;
     button.textContent = "Upload song";
   }
 }
 
-$("uploadForm").addEventListener("submit", uploadSong);
+$("uploadForm")?.addEventListener("submit", uploadSong);
 
-/* Delete songs */
+/* ADMIN: EDIT SONG DETAILS AND COVER */
+async function editSong(id) {
+  if (!sb || !isAdmin) {
+    toast("Admin access required.");
+    return;
+  }
+
+  const song = songs.find(item => String(item.id) === String(id));
+  if (!song) return;
+
+  const title = prompt("Song title:", song.title || "");
+  if (title === null) return;
+
+  const artist = prompt("Artist / singer:", song.artist || "");
+  if (artist === null) return;
+
+  const album = prompt("Album:", song.album || "");
+  if (album === null) return;
+
+  const yearText = prompt("Year:", song.year || "");
+  if (yearText === null) return;
+
+  if (!title.trim() || !artist.trim()) {
+    toast("Title and artist are required.");
+    return;
+  }
+
+  const year = yearText.trim() ? Number(yearText.trim()) : null;
+  if (year !== null &&
+      (!Number.isInteger(year) || year < 1000 || year > 9999)) {
+    toast("Enter a valid year.");
+    return;
+  }
+
+  const { error } = await sb.from("songs")
+    .update({
+      title: title.trim(),
+      artist: artist.trim(),
+      album: album.trim() || null,
+      year
+    })
+    .eq("id", song.id);
+
+  if (error) {
+    console.error(error);
+    toast("Edit failed: " + error.message);
+    return;
+  }
+
+  toast("Song details updated.");
+  await loadSongs();
+
+  const changeCover = confirm("Do you also want to change the cover image?");
+  if (!changeCover) return;
+
+  const picker = document.createElement("input");
+  picker.type = "file";
+  picker.accept = "image/jpeg,image/png,image/webp";
+
+  picker.onchange = async () => {
+    const file = picker.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast("Cover must be 5 MB or smaller.");
+      return;
+    }
+
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      toast("Choose a JPG, PNG or WebP image.");
+      return;
+    }
+
+    const path = `${crypto.randomUUID()}/${file.name
+      .toLowerCase().replace(/[^a-z0-9._-]+/g, "-").slice(-90)}`;
+
+    const upload = await sb.storage.from("music-covers").upload(path, file, {
+      upsert: false,
+      contentType: file.type
+    });
+
+    if (upload.error) {
+      toast("Cover upload failed: " + upload.error.message);
+      return;
+    }
+
+    const { data } = sb.storage.from("music-covers").getPublicUrl(path);
+
+    const update = await sb.from("songs")
+      .update({ cover_url: data.publicUrl, cover_path: path })
+      .eq("id", song.id);
+
+    if (update.error) {
+      await sb.storage.from("music-covers").remove([path]);
+      toast("Could not save cover: " + update.error.message);
+      return;
+    }
+
+    if (song.cover_path) {
+      await sb.storage.from("music-covers").remove([song.cover_path]);
+    }
+
+    toast("Cover updated.");
+    await loadSongs();
+  };
+
+  picker.click();
+}
+
+/* ADMIN: DELETE SONG */
 async function deleteSong(id) {
   if (!sb || !isAdmin) {
     toast("Admin access required.");
@@ -557,14 +723,14 @@ async function deleteSong(id) {
 
   if (!confirm("Delete this song and its files?")) return;
 
-  const song = songs.find(item => item.id === id);
+  const song = songs.find(item => String(item.id) === String(id));
   if (!song) return;
 
-  const { error } = await sb.from("songs").delete().eq("id", id);
+  const { error } = await sb.from("songs").delete().eq("id", song.id);
 
   if (error) {
     console.error(error);
-    toast("Delete failed. Check admin permissions.");
+    toast("Delete failed: " + error.message);
     return;
   }
 
@@ -580,23 +746,24 @@ async function deleteSong(id) {
 
   await Promise.allSettled(tasks);
 
-  favorites = favorites.filter(item => item !== id);
+  favorites = favorites.filter(item => String(item) !== String(id));
   saveFavorites();
+
+  if (String(currentSongId) === String(id)) {
+    $("audio")?.pause();
+    $("miniPlayer")?.classList.add("hidden");
+    currentSongId = null;
+  }
 
   toast("Song deleted.");
   await loadSongs();
 }
 
-/* Supabase initialization */
+/* SUPABASE INITIALIZATION */
 async function init() {
   const config = window.ZG_SUPABASE_CONFIG;
 
-  if (
-    !window.supabase ||
-    !config ||
-    !config.url ||
-    !config.anonKey
-  ) {
+  if (!window.supabase || !config?.url || !config?.anonKey) {
     setStatus("Setup needed: check config.js.");
     render();
     return;
@@ -617,24 +784,24 @@ async function init() {
   }
 }
 
-/* Installable PWA */
+/* INSTALLABLE PWA */
 window.addEventListener("beforeinstallprompt", event => {
   event.preventDefault();
   deferredInstall = event;
-  $("installBtn").classList.remove("hidden");
+  $("installBtn")?.classList.remove("hidden");
 });
 
-$("installBtn").addEventListener("click", async () => {
+$("installBtn")?.addEventListener("click", async () => {
   if (!deferredInstall) return;
 
   deferredInstall.prompt();
   await deferredInstall.userChoice;
 
   deferredInstall = null;
-  $("installBtn").classList.add("hidden");
+  $("installBtn")?.classList.add("hidden");
 });
 
-/* Service worker */
+/* SERVICE WORKER */
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js").catch(console.warn);
