@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -13,9 +14,14 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#" aria-label="ZG Memory home"><span class="logo">ZG</span><span>ZG Memory</span></a>
+    <a class="brand" href="#" aria-label="ZG Memory home">
+      <span class="logo">ZG</span>
+      <span>ZG Memory</span>
+    </a>
     <div class="top-actions">
-      <button id="headerFav" class="pill" type="button">♡ <span id="favCount">0</span></button>
+      <button id="headerFav" class="pill" type="button">
+        ♡ <span id="favCount">0</span>
+      </button>
       <button id="installBtn" class="pill hidden" type="button">Install app</button>
       <button id="profileTop" class="icon-button" type="button" aria-label="Profile">♙</button>
     </div>
@@ -24,79 +30,185 @@
   <main class="wrap">
     <section class="hero">
       <div class="artist-row">
-        <div class="artist-avatar">ZG</div>
-        <div class="artist-copy"><p class="eyebrow">A MUSIC MEMORIAL</p><h1>Remember the music.</h1><p class="muted">A personal music library built with love.</p></div>
+        <div class="artist-avatar">
+          <img
+            src="./zubeen-garg.jpg"
+            alt="Zubeen Garg"
+            class="artist-profile-picture"
+            onerror="this.style.display='none';this.parentElement.classList.add('avatar-fallback');"
+          >
+          <span class="avatar-fallback-text">ZG</span>
+        </div>
+        <div class="artist-copy">
+          <p class="eyebrow">A MUSIC MEMORIAL</p>
+          <h1>Remember the music.</h1>
+          <p class="muted">A personal music library built with love.</p>
+        </div>
       </div>
-      <a class="about-link" href="https://en.wikipedia.org/wiki/Zubeen_Garg" target="_blank" rel="noopener noreferrer">ⓘ About Zubeen Garg</a>
+      <a class="about-link" href="https://en.wikipedia.org/wiki/Zubeen_Garg"
+         target="_blank" rel="noopener noreferrer">ⓘ About Zubeen Garg</a>
     </section>
 
     <section class="search-row">
-      <label class="searchbox"><span>⌕</span><input id="searchInput" type="search" placeholder="Search songs, artists, albums, year…" autocomplete="off"></label>
+      <label class="searchbox">
+        <span>⌕</span>
+        <input id="searchInput" type="search"
+          placeholder="Search songs, artists, albums, year…"
+          autocomplete="off">
+      </label>
       <button id="clearSearch" class="pill subtle" type="button">Clear</button>
     </section>
 
     <nav class="filter-tabs" aria-label="Music filters">
       <button class="tab active" data-view="home" type="button">Home</button>
       <button class="tab" data-view="library" type="button">Library</button>
-      <button class="tab" data-view="favorites" type="button">Favorites <span id="favTabCount">0</span></button>
+      <button class="tab" data-view="favorites" type="button">
+        Favorites <span id="favTabCount">0</span>
+      </button>
     </nav>
 
-    <section class="section-heading"><div><p class="eyebrow" id="sectionEyebrow">YOUR COLLECTION</p><h2 id="sectionTitle">All songs</h2></div><span class="count" id="songCount">0 songs</span></section>
+    <section class="section-heading">
+      <div>
+        <p class="eyebrow" id="sectionEyebrow">YOUR COLLECTION</p>
+        <h2 id="sectionTitle">All songs</h2>
+      </div>
+      <span class="count" id="songCount">0 songs</span>
+    </section>
+
     <div id="status" class="status">Connect Supabase to load your collection.</div>
     <section id="songList" class="song-list" aria-live="polite"></section>
-    <section id="emptyState" class="empty hidden"><div class="empty-icon">♫</div><h3>No songs found</h3><p>Try another search or add music from the admin account.</p></section>
+
+    <section id="emptyState" class="empty hidden">
+      <div class="empty-icon">♫</div>
+      <h3>No songs found</h3>
+      <p>Try another search or add music from the admin account.</p>
+    </section>
 
     <section class="profile-card" id="profileCard">
-      <div><p class="eyebrow">YOUR ACCOUNT</p><h2 id="profileTitle">Profile</h2><p class="muted" id="profileText">Sign in to access your profile. Favorites are saved on this device.</p></div>
+      <div>
+        <p class="eyebrow">YOUR ACCOUNT</p>
+        <h2 id="profileTitle">Profile</h2>
+        <p class="muted" id="profileText">
+          Sign in to access your profile. Favorites are saved on this device.
+        </p>
+      </div>
       <button class="gold-button" id="profileAction" type="button">Sign in</button>
     </section>
 
     <section class="admin-card hidden" id="adminCard">
-      <div class="section-heading"><div><p class="eyebrow">ADMIN TOOLS</p><h2>Manage music</h2></div><span class="admin-badge">ADMIN</span></div>
-      <form id="uploadForm" class="admin-form">
-        <label>Song title *<input id="songTitle" required maxlength="120" placeholder="Song title"></label>
-        <label>Artist / singer *<input id="songArtist" required maxlength="120" placeholder="Artist name"></label>
-        <div class="two-col">
-          <label>Album<input id="songAlbum" maxlength="120" placeholder="Album name"></label>
-          <label>Year<input id="songYear" inputmode="numeric" maxlength="4" placeholder="Year"></label>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">ADMIN TOOLS</p>
+          <h2>Manage music</h2>
         </div>
-        <label>Cover image (JPG/PNG/WebP, max 5 MB)<input id="coverFile" type="file" accept="image/jpeg,image/png,image/webp" required></label>
-        <label>Audio file (MP3/M4A/OGG/WAV, max 50 MB)<input id="audioFile" type="file" accept="audio/mpeg,audio/mp4,audio/ogg,audio/wav,audio/x-wav" required></label>
+        <span class="admin-badge">ADMIN</span>
+      </div>
+
+      <form id="uploadForm" class="admin-form">
+        <label>
+          Song title *
+          <input id="songTitle" required maxlength="120" placeholder="Song title">
+        </label>
+
+        <label>
+          Artist / singer *
+          <input id="songArtist" required maxlength="120" placeholder="Artist name">
+        </label>
+
+        <div class="two-col">
+          <label>
+            Album
+            <input id="songAlbum" maxlength="120" placeholder="Album name">
+          </label>
+          <label>
+            Year
+            <input id="songYear" inputmode="numeric" maxlength="4" placeholder="Year">
+          </label>
+        </div>
+
+        <label>
+          Cover image (JPG/PNG/WebP, max 5 MB)
+          <input id="coverFile" type="file"
+            accept="image/jpeg,image/png,image/webp" required>
+        </label>
+
+        <label>
+          Audio file (MP3/M4A/OGG/WAV, max 50 MB)
+          <input id="audioFile" type="file"
+            accept="audio/mpeg,audio/mp4,audio/ogg,audio/wav,audio/x-wav" required>
+        </label>
+
         <button class="gold-button wide" id="uploadBtn" type="submit">Upload song</button>
-        <p class="fine-print">Upload only audio and artwork you own or have permission to distribute. Free storage quotas apply.</p>
+        <p class="fine-print">
+          Upload only audio and artwork you own or have permission to distribute.
+          Free storage quotas apply.
+        </p>
       </form>
+
       <h3 class="subheading">Existing songs</h3>
       <div id="adminSongList" class="admin-song-list"></div>
     </section>
   </main>
 
   <nav class="bottom-nav" aria-label="Main navigation">
-    <button class="bottom-item active" data-view="home" type="button"><span>⌂</span>Home</button>
-    <button class="bottom-item" id="searchNav" type="button"><span>⌕</span>Search</button>
-    <button class="bottom-item" data-view="library" type="button"><span>▤</span>Library</button>
-    <button class="bottom-item" data-view="favorites" type="button"><span>☆</span>Favs</button>
-    <button class="bottom-item" id="profileNav" type="button"><span>♙</span>Profile</button>
+    <button class="bottom-item active" data-view="home" type="button">
+      <span>⌂</span>Home
+    </button>
+    <button class="bottom-item" id="searchNav" type="button">
+      <span>⌕</span>Search
+    </button>
+    <button class="bottom-item" data-view="library" type="button">
+      <span>▤</span>Library
+    </button>
+    <button class="bottom-item" data-view="favorites" type="button">
+      <span>☆</span>Favs
+    </button>
+    <button class="bottom-item" id="profileNav" type="button">
+      <span>♙</span>Profile
+    </button>
   </nav>
 
   <section id="miniPlayer" class="mini-player hidden" aria-label="Audio player">
     <img id="playerCover" src="./icon.svg" alt="" class="player-cover">
-    <div class="player-info"><strong id="playerTitle">Song title</strong><span id="playerArtist">Artist</span><audio id="audio" controls preload="none"></audio></div>
+    <div class="player-info">
+      <strong id="playerTitle">Song title</strong>
+      <span id="playerArtist">Artist</span>
+      <audio id="audio" controls preload="none"></audio>
+    </div>
     <button id="closePlayer" class="icon-button" aria-label="Close player">×</button>
   </section>
 
   <dialog id="authDialog" class="dialog">
     <form id="authForm" method="dialog" class="dialog-card">
       <button class="dialog-close" value="cancel" aria-label="Close">×</button>
-      <p class="eyebrow">ZG MEMORY ACCOUNT</p><h2 id="authTitle">Sign in</h2>
-      <p class="muted small">Sign in to see your profile. Favorites are saved on this device.</p>
-      <label>Email<input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com"></label>
-      <label>Password<input id="authPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="At least 8 characters"></label>
+      <p class="eyebrow">ZG MEMORY ACCOUNT</p>
+      <h2 id="authTitle">Sign in</h2>
+      <p class="muted small">
+        Sign in to see your profile. Favorites are saved on this device.
+      </p>
+
+      <label>
+        Email
+        <input id="authEmail" type="email" autocomplete="email"
+          required placeholder="you@example.com">
+      </label>
+
+      <label>
+        Password
+        <input id="authPassword" type="password" autocomplete="current-password"
+          minlength="8" required placeholder="At least 8 characters">
+      </label>
+
       <button class="gold-button wide" id="authSubmit" value="default">Sign in</button>
-      <button class="text-button" id="toggleAuth" type="button">Need an account? Sign up</button>
+      <button class="text-button" id="toggleAuth" type="button">
+        Need an account? Sign up
+      </button>
       <p id="authMessage" class="message" role="status"></p>
     </form>
   </dialog>
+
   <div id="toast" class="toast" role="status"></div>
+
   <script src="./config.js"></script>
   <script src="./app.js"></script>
 </body>
