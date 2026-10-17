@@ -44,6 +44,7 @@ function toast(message) {
 
 function setStatus(message) {
   if ($("status")) $("status").textContent = message;
+  if ($("uploadStatus") && !isAdmin) $("uploadStatus").textContent = "";
 }
 
 function safeText(value) {
@@ -96,9 +97,9 @@ function render() {
   };
   const heading = titles[currentView] || titles.home;
 
-  $("sectionEyebrow").textContent = heading[0];
-  $("sectionTitle").textContent = heading[1];
-  $("songCount").textContent = `${list.length} song${list.length === 1 ? "" : "s"}`;
+  if ($("sectionEyebrow")) $("sectionEyebrow").textContent = heading[0];
+  if ($("sectionTitle")) $("sectionTitle").textContent = heading[1];
+  if ($("songCount")) $("songCount").textContent = `${list.length} song${list.length === 1 ? "" : "s"}`;
 
   updateFavCount();
 
@@ -134,6 +135,7 @@ function render() {
   });
 
   $("adminCard")?.classList.toggle("hidden", !isAdmin);
+  $("adminPanel")?.classList.toggle("hidden", !isAdmin);
   renderAdminList();
 }
 
@@ -324,6 +326,20 @@ $("searchNav")?.addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
+
+/* Buttons used by the current page */
+$("allSongsBtn")?.addEventListener("click", () => setView("home"));
+$("favoritesBtn")?.addEventListener("click", () => setView("favorites"));
+$("adminLoginBtn")?.addEventListener("click", () => {
+  if (currentUser && isAdmin) {
+    $("adminPanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  } else {
+    openAuth();
+  }
+});
+$("adminLogoutBtn")?.addEventListener("click", signOut);
+$("closeAuth")?.addEventListener("click", () => $("authDialog")?.close());
+
 /* Profile and authentication */
 function openProfile() {
   $("profileCard")?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -446,8 +462,8 @@ async function uploadSong(event) {
   const artist = $("songArtist").value.trim();
   const album = $("songAlbum").value.trim();
   const yearText = $("songYear").value.trim();
-  const cover = $("coverFile").files[0];
-  const audio = $("audioFile").files[0];
+  const cover = $("songCover")?.files[0] || null;
+  const audio = $("songAudio")?.files[0] || null;
 
   if (!title || !artist || !cover || !audio) {
     toast("Complete all required fields.");
@@ -471,9 +487,8 @@ async function uploadSong(event) {
     return;
   }
 
-  const button = $("uploadBtn");
-  button.disabled = true;
-  button.textContent = "Uploading…";
+  const button = $("uploadBtn") || $("uploadForm")?.querySelector('button[type="submit"]');
+  if (button) { button.disabled = true; button.textContent = "Uploading…"; }
 
   const cleanName = file =>
     file.name.toLowerCase().replace(/[^a-z0-9._-]+/g, "-").slice(-90);
