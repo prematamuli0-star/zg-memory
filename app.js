@@ -641,7 +641,7 @@ async function uploadSong(event) {
   const yearText = $("songYear")?.value.trim() || "";
   const cover = $("songCover")?.files?.[0];
   const audioInput = $("songAudio");
-  const multipleInput = $("multipleSongs");
+  const multipleInput = $("songAudioMultiple");
 
   const audioFiles = [
     ...(audioInput?.files || []),
