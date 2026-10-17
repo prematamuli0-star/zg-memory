@@ -450,7 +450,10 @@ function openAuth() {
 }
 
 function closeAuth() {
-  $("authModal")?.classList.add("hidden");
+  const modal = $("authDialog");
+  if (modal && typeof modal.close === "function" && modal.open) {
+    modal.close();
+  }
 }
 
 function openProfile() {
