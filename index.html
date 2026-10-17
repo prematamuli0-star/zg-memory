@@ -125,14 +125,34 @@
   </dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <section id="miniPlayer" class="mini-player hidden" aria-label="Music player">
-    <img id="playerCover" src="./icon.svg" alt="Song cover" class="player-cover">
-    <div class="player-info">
-      <strong id="playerTitle">Song title</strong><span id="playerArtist">Artist name</span>
-      <audio id="audio" controls preload="none">Your browser does not support audio playback.</audio>
-      <div class="skip-controls"><button id="back10" type="button" aria-label="Go back 10 seconds">↶ 10s</button><button id="forward10" type="button" aria-label="Go forward 10 seconds">10s ↷</button></div>
+  
+<section id="miniPlayer" class="mini-player hidden" aria-label="Music player">
+  <img id="playerCover" src="./icon.svg" alt="Song cover" class="player-cover">
+
+  <div class="player-info">
+    <strong id="playerTitle">Song title</strong>
+    <span id="playerArtist">Artist name</span>
+
+    <audio id="audio" controls preload="none">
+      Your browser does not support audio playback.
+    </audio>
+
+    <div class="skip-controls">
+      <button id="previousSong" type="button">|◀ Previous</button>
+      <button id="back10" type="button">↶ 10s</button>
+      <button id="forward10" type="button">10s ↷</button>
+      <button id="nextSong" type="button">Next ▶|</button>
     </div>
-    <button id="closePlayer" class="icon-button" type="button" aria-label="Minimize or close player">×</button>
-  </section>
+
+    <div class="skip-controls">
+      <button id="repeatSong" type="button" aria-pressed="false">Repeat: Off</button>
+      <button id="shuffleSong" type="button" aria-pressed="false">Shuffle: Off</button>
+    </div>
+  </div>
+
+  <button id="closePlayer" class="icon-button" type="button"
+    aria-label="Minimize or close player">×</button>
+</section>
+
 </body>
 </html>
