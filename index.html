@@ -11,7 +11,16 @@
   <link rel="stylesheet" href="./styles.css?v=12">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js" defer></script>
-  <script src="./app.js?v=3" defer></script>
+  <script src="./app.js?v=4" defer></script>
+  <style>
+    .albums-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:14px;margin:14px 0 22px}
+    .album-card{display:block;text-align:left;min-width:0;padding:10px;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--text);cursor:pointer}
+    .album-card img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:11px;background:var(--panel2);margin-bottom:10px}
+    .album-card strong{display:block;overflow-wrap:anywhere;font-size:14px}
+    .album-card span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+    #backAlbumsBtn{margin:0 0 12px}
+  </style>
+
 </head>
 <body>
   <header class="site-header">
@@ -43,11 +52,13 @@
         <button id="clearSearch" class="button secondary" type="button">Clear</button>
       </div>
       <div class="music-tabs">
-        <button class="tab-button active" type="button" data-view="home" id="allSongsBtn">Home</button>
+        <button class="tab-button active" type="button" data-view="home" id="allSongsBtn">All Songs</button>
+        <button class="tab-button" type="button" data-view="albums" id="albumsBtn">Albums</button>
         <button class="tab-button" type="button" data-view="library">Library</button>
         <button class="tab-button" type="button" data-view="favorites" id="favoritesBtn">Favorites <span id="favTabCount">0</span></button>
       </div>
-      <div class="section-heading">
+      <div id="albumsView" class="albums-grid hidden" aria-live="polite"></div>
+      <div class="section-heading" id="songSectionHeading">
         <div>
           <p id="sectionEyebrow" class="eyebrow">YOUR COLLECTION</p>
           <h2 id="sectionTitle">All songs</h2>
@@ -75,12 +86,14 @@
       </div>
       <form id="uploadForm" class="upload-form">
         <h3>Upload New Song</h3>
-        <label for="songTitle">Song title</label><input id="songTitle" name="title" type="text" placeholder="Enter song title" required>
+        <label for="songTitle">Song title (required for single upload)</label><input id="songTitle" name="title" type="text" placeholder="Enter song title for single upload">
         <label for="songArtist">Singer / artist</label><input id="songArtist" name="artist" type="text" placeholder="Enter singer name" required>
         <label for="songAlbum">Album</label><input id="songAlbum" name="album" type="text" placeholder="Enter album name">
         <label for="songYear">Year</label><input id="songYear" name="year" type="number" min="1000" max="9999" placeholder="e.g. 1992">
         <label for="songCover">Cover photo</label><input id="songCover" name="cover" type="file" accept="image/jpeg,image/png,image/webp" required>
-        <label for="songAudio">MP3 audio file</label><input id="songAudio" name="audio" type="file" accept="audio/*" required>
+        <label for="songAudio">Single song audio file</label><input id="songAudio" name="audio" type="file" accept="audio/*">
+        <label for="songAudioMultiple">Or select multiple songs for this album</label><input id="songAudioMultiple" name="audioMultiple" type="file" accept="audio/mpeg,audio/mp4,audio/aac,audio/ogg,audio/wav,.mp3,.m4a,.aac,.ogg,.wav" multiple>
+        <p class="muted">For multiple upload, song titles are taken from the selected file names.</p>
         <button id="uploadBtn" class="button primary" type="submit">Upload Song</button>
         <p id="uploadStatus" class="message" role="status" aria-live="polite"></p>
       </form>
