@@ -317,6 +317,103 @@ async function playSong(id) {
   }
 }
 
+/* Player controls: Next, Previous, Repeat and Shuffle */
+let repeatSongEnabled = false;
+let shuffleSongEnabled = false;
+
+function getPlaybackList() {
+  const list = visibleSongs();
+  return list.length ? list : songs;
+}
+
+async function playNextSong() {
+  const audio = $("audio");
+  const list = getPlaybackList();
+
+  if (!list.length) return;
+
+  if (shuffleSongEnabled && list.length > 1) {
+    const choices = list.filter(
+      song => String(song.id) !== String(currentSongId)
+    );
+    const next = choices[Math.floor(Math.random() * choices.length)];
+
+    if (next) await playSong(next.id);
+    return;
+  }
+
+  const index = list.findIndex(
+    song => String(song.id) === String(currentSongId)
+  );
+
+  const nextIndex = index < 0 ? 0 : (index + 1) % list.length;
+  await playSong(list[nextIndex].id);
+}
+
+async function playPreviousSong() {
+  const list = getPlaybackList();
+
+  if (!list.length) return;
+
+  const index = list.findIndex(
+    song => String(song.id) === String(currentSongId)
+  );
+
+  const previousIndex =
+    index < 0 ? 0 : (index - 1 + list.length) % list.length;
+
+  await playSong(list[previousIndex].id);
+}
+
+$("audio")?.addEventListener("ended", async () => {
+  if (repeatSongEnabled) {
+    const audio = $("audio");
+    audio.currentTime = 0;
+
+    try {
+      await audio.play();
+    } catch {
+      toast("Tap Play to restart the song.");
+    }
+  } else {
+    await playNextSong();
+  }
+});
+
+$("nextSong")?.addEventListener("click", event => {
+  event.stopPropagation();
+  playNextSong();
+});
+
+$("previousSong")?.addEventListener("click", event => {
+  event.stopPropagation();
+  playPreviousSong();
+});
+
+$("repeatSong")?.addEventListener("click", event => {
+  event.stopPropagation();
+  repeatSongEnabled = !repeatSongEnabled;
+
+  $("repeatSong").textContent =
+    repeatSongEnabled ? "Repeat: On" : "Repeat: Off";
+
+  $("repeatSong").setAttribute(
+    "aria-pressed", String(repeatSongEnabled)
+  );
+});
+
+$("shuffleSong")?.addEventListener("click", event => {
+  event.stopPropagation();
+  shuffleSongEnabled = !shuffleSongEnabled;
+
+  $("shuffleSong").textContent =
+    shuffleSongEnabled ? "Shuffle: On" : "Shuffle: Off";
+
+  $("shuffleSong").setAttribute(
+    "aria-pressed", String(shuffleSongEnabled)
+  );
+});
+
 /* Full-screen and mini-player controls */
 function expandPlayer() {
   $("miniPlayer")?.classList.add("player-expanded");
