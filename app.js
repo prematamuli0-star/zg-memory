@@ -443,8 +443,10 @@ $("headerFav")?.addEventListener("click", () => setView("favorites"));
 
 /* Profile and authentication */
 function openAuth() {
-  const modal = $("authModal");
-  if (modal) modal.classList.remove("hidden");
+  const modal = $("authDialog");
+  if (modal && typeof modal.showModal === "function") {
+    if (!modal.open) modal.showModal();
+  }
 }
 
 function closeAuth() {
