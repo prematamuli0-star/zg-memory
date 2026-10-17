@@ -572,17 +572,21 @@ async function refreshSession() {
   */
   isAdmin = false;
 
-  if (currentUser && sb) {
-    const { data: profile, error: profileError } = await sb
-      .from("profiles")
-      .select("is_admin")
-      .eq("id", currentUser.id)
-      .maybeSingle();
+ 
 
-    if (!profileError && profile?.is_admin === true) {
-      isAdmin = true;
-    }
+ if (currentUser && sb) {
+  const { data: adminRecord, error: adminError } = await sb
+    .from("admin_users")
+    .select("user_id")
+    .eq("user_id", currentUser.id)
+    .maybeSingle();
+
+  if (!adminError && adminRecord?.user_id === currentUser.id) {
+    isAdmin = true;
+  } else if (adminError) {
+    console.error("Admin check failed:", adminError);
   }
+}
 
   $("adminLoginBtn")?.classList.toggle("hidden", isAdmin);
   $("adminCard")?.classList.toggle("hidden", !isAdmin);
