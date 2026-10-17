@@ -1,218 +1,124 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#101014">
-  <meta name="description" content="ZG Memory - Listen to your favourite music online.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#08080b">
+  <meta name="description" content="ZG Memory — a personal music library built with love.">
   <title>ZG Memory | Music Player</title>
-
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css">
-
+  <link rel="stylesheet" href="./styles.css?v=3">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js" defer></script>
-  <script src="./app.js" defer></script>
+  <script src="./app.js?v=3" defer></script>
 </head>
-
 <body>
   <header class="site-header">
-    <a class="brand" href="./" aria-label="ZG Memory Home">
-      <img src="./icon.svg" alt="ZG Memory logo" class="brand-logo">
+    <a class="brand" href="./" aria-label="ZG Memory home">
+      <img src="./icon.svg" alt="" class="brand-logo">
       <span>ZG <strong>Memory</strong></span>
     </a>
-
-    <button id="adminLoginBtn" class="button secondary" type="button">
-      Admin Login
-    </button>
+    <div class="top-actions">
+      <button id="headerFav" class="pill" type="button" aria-label="Favorites">♡ <span id="favCount">0</span></button>
+      <button id="adminLoginBtn" class="button secondary" type="button">Admin Login</button>
+      <button id="profileTop" class="icon-button" type="button" aria-label="Profile">♙</button>
+    </div>
   </header>
 
   <main>
     <section class="hero">
       <div class="hero-content">
-        <p class="eyebrow">YOUR MUSIC COLLECTION</p>
-        <h1>Feel the <span>Music.</span></h1>
-        <p class="hero-description">
-          Listen to your favourite songs anytime, anywhere.
-        </p>
+        <p class="eyebrow">A MUSIC MEMORIAL</p>
+        <h1>Remember the music.</h1>
+        <p class="hero-description">A personal music library built with love.</p>
+        <a class="about-link" href="#about">ⓘ About Zubeen Garg</a>
       </div>
-
-      <img
-        src="./Zubeen%20Garg.jpeg"
-        alt="Zubeen Garg"
-        class="artist-profile-picture"
-        onerror="this.style.display='none'"
-      >
+      <img src="./Zubeen%20Garg.jpeg" alt="Zubeen Garg" class="artist-profile-picture" onerror="this.style.display='none'">
     </section>
 
-    <section class="music-section">
+    <section class="music-section" id="collection">
+      <div class="search-box">
+        <input id="searchInput" type="search" placeholder="Search songs, artists, albums, year..." aria-label="Search songs, artists, albums, year">
+        <button id="clearSearch" class="button secondary" type="button">Clear</button>
+      </div>
+      <div class="music-tabs">
+        <button class="tab-button active" type="button" data-view="home" id="allSongsBtn">Home</button>
+        <button class="tab-button" type="button" data-view="library">Library</button>
+        <button class="tab-button" type="button" data-view="favorites" id="favoritesBtn">Favorites <span id="favTabCount">0</span></button>
+      </div>
       <div class="section-heading">
         <div>
-          <p class="eyebrow">DISCOVER</p>
-          <h2>Your Music</h2>
+          <p id="sectionEyebrow" class="eyebrow">YOUR COLLECTION</p>
+          <h2 id="sectionTitle">All songs</h2>
         </div>
+        <span id="songCount" class="count">Loading…</span>
       </div>
+      <p id="status" class="status" role="status" aria-live="polite">Loading songs…</p>
+      <div id="songList" class="song-list" aria-live="polite"></div>
+      <div id="emptyState" class="empty hidden"><div class="empty-icon">♫</div><h3>No songs found</h3><p>Try another search or check back later.</p></div>
+    </section>
 
-      <div class="search-box">
-        <input
-          id="searchInput"
-          type="search"
-          placeholder="Search songs or artists..."
-          aria-label="Search songs or artists"
-        >
+    <section id="profileCard" class="profile-card">
+      <div>
+        <p class="eyebrow">YOUR ACCOUNT</p>
+        <h2 id="profileTitle">Profile</h2>
+        <p id="profileText" class="muted">Sign in to access your profile. Favorites are saved on this device.</p>
       </div>
-
-      <div class="music-tabs">
-        <button id="allSongsBtn" class="tab-button active" type="button">
-          All Songs
-        </button>
-        <button id="favoritesBtn" class="tab-button" type="button">
-          ♥ Favorites
-        </button>
-      </div>
-
-      <div id="songList" class="song-list" aria-live="polite">
-        <p class="empty-message">Loading songs...</p>
-      </div>
+      <button id="profileAction" class="gold-button" type="button">Sign in</button>
     </section>
 
     <section id="adminPanel" class="admin-panel hidden">
       <div class="section-heading">
-        <div>
-          <p class="eyebrow">MANAGE YOUR COLLECTION</p>
-          <h2>Admin Panel</h2>
-        </div>
-        <button id="adminLogoutBtn" class="button secondary" type="button">
-          Logout
-        </button>
+        <div><p class="eyebrow">MANAGE YOUR COLLECTION</p><h2>Admin Panel</h2></div>
+        <button id="adminLogoutBtn" class="button secondary" type="button">Logout</button>
       </div>
-
       <form id="uploadForm" class="upload-form">
         <h3>Upload New Song</h3>
-
-        <label for="songTitle">Song Title</label>
-        <input
-          id="songTitle"
-          name="title"
-          type="text"
-          placeholder="Enter song title"
-          required
-        >
-
-        <label for="songArtist">Singer / Artist</label>
-        <input
-          id="songArtist"
-          name="artist"
-          type="text"
-          placeholder="Enter singer name"
-          required
-        >
-
-        <label for="songAlbum">Album</label>
-        <input
-          id="songAlbum"
-          name="album"
-          type="text"
-          placeholder="Enter album name"
-        >
-
-        <label for="songYear">Year</label>
-        <input
-          id="songYear"
-          name="year"
-          type="number"
-          placeholder="e.g. 2024"
-          min="1900"
-          max="2100"
-        >
-
-        <label for="songCover">Cover Photo</label>
-        <input
-          id="songCover"
-          name="cover"
-          type="file"
-          accept="image/*"
-        >
-
-        <label for="songAudio">MP3 Audio File</label>
-        <input
-          id="songAudio"
-          name="audio"
-          type="file"
-          accept="audio/mpeg,audio/mp3,audio/*"
-          required
-        >
-
-        <button class="button primary" type="submit">
-          Upload Song
-        </button>
-
-        <p id="uploadStatus" role="status" aria-live="polite"></p>
+        <label for="songTitle">Song title</label><input id="songTitle" name="title" type="text" placeholder="Enter song title" required>
+        <label for="songArtist">Singer / artist</label><input id="songArtist" name="artist" type="text" placeholder="Enter singer name" required>
+        <label for="songAlbum">Album</label><input id="songAlbum" name="album" type="text" placeholder="Enter album name">
+        <label for="songYear">Year</label><input id="songYear" name="year" type="number" min="1000" max="9999" placeholder="e.g. 1992">
+        <label for="songCover">Cover photo</label><input id="songCover" name="cover" type="file" accept="image/jpeg,image/png,image/webp" required>
+        <label for="songAudio">MP3 audio file</label><input id="songAudio" name="audio" type="file" accept="audio/*" required>
+        <button id="uploadBtn" class="button primary" type="submit">Upload Song</button>
+        <p id="uploadStatus" class="message" role="status" aria-live="polite"></p>
       </form>
-
-      <div class="admin-songs-section">
-        <h3>Manage Songs</h3>
-        <div id="adminSongList" class="admin-song-list">
-          <p>Your uploaded songs will appear here.</p>
-        </div>
-      </div>
+      <div class="admin-songs-section"><h3>Manage Songs</h3><div id="adminSongList" class="admin-song-list"></div></div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <p>ZG Memory · Music for every memory.</p>
-  </footer>
+  <footer class="site-footer" id="about"><p>ZG Memory · Music for every memory.</p></footer>
 
-  <!-- Music Player: tap the player area to expand -->
-  <section
-    id="miniPlayer"
-    class="mini-player hidden"
-    aria-label="Music player"
-  >
-    <img
-      id="playerCover"
-      src="./icon.svg"
-      alt="Song cover"
-      class="player-cover"
-    >
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button class="bottom-item active" type="button" data-view="home"><span>⌂</span>Home</button>
+    <button class="bottom-item" id="searchNav" type="button"><span>⌕</span>Search</button>
+    <button class="bottom-item" type="button" data-view="library"><span>▤</span>Library</button>
+    <button class="bottom-item" type="button" data-view="favorites"><span>☆</span>Favs</button>
+    <button class="bottom-item" id="profileNav" type="button"><span>♙</span>Profile</button>
+  </nav>
 
+  <dialog id="authDialog" class="dialog">
+    <form id="authForm" class="dialog-card">
+      <button class="dialog-close" id="closeAuth" type="button" aria-label="Close">×</button>
+      <p class="eyebrow">ZG MEMORY ACCOUNT</p><h2 id="authTitle">Sign in</h2>
+      <label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" required>
+      <label for="authPassword">Password</label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required>
+      <p id="authMessage" class="message" role="status" aria-live="polite"></p>
+      <button id="authSubmit" class="gold-button wide" type="submit">Sign in</button>
+      <button id="toggleAuth" class="text-button" type="button">Need an account? Sign up</button>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <section id="miniPlayer" class="mini-player hidden" aria-label="Music player">
+    <img id="playerCover" src="./icon.svg" alt="Song cover" class="player-cover">
     <div class="player-info">
-      <strong id="playerTitle">Song title</strong>
-      <span id="playerArtist">Artist name</span>
-
-      <audio id="audio" controls preload="none">
-        Your browser does not support audio playback.
-      </audio>
-
-      <div class="skip-controls">
-        <button
-          id="back10"
-          type="button"
-          aria-label="Go back 10 seconds"
-        >
-          ↶ 10s
-        </button>
-
-        <button
-          id="forward10"
-          type="button"
-          aria-label="Go forward 10 seconds"
-        >
-          10s ↷
-        </button>
-      </div>
+      <strong id="playerTitle">Song title</strong><span id="playerArtist">Artist name</span>
+      <audio id="audio" controls preload="none">Your browser does not support audio playback.</audio>
+      <div class="skip-controls"><button id="back10" type="button" aria-label="Go back 10 seconds">↶ 10s</button><button id="forward10" type="button" aria-label="Go forward 10 seconds">10s ↷</button></div>
     </div>
-
-    <button
-      id="closePlayer"
-      class="icon-button"
-      type="button"
-      aria-label="Minimize or close player"
-    >
-      ×
-    </button>
+    <button id="closePlayer" class="icon-button" type="button" aria-label="Minimize or close player">×</button>
   </section>
 </body>
 </html>
