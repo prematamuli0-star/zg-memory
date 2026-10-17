@@ -1182,3 +1182,40 @@ audio {
 .bottom-item.active { color: var(--gold2); }
 .dialog-card .dialog-close { position: absolute; top: 12px; right: 14px; width: 32px; height: 32px; padding: 0; }
 @media (max-width: 390px) { .hero .artist-profile-picture { flex-basis: 68px; width: 68px; height: 68px; max-width: 68px; } }
+
+/* ZG MEMORY — CINEMATIC NEON GLASS THEME (visual overrides only) */
+:root{color-scheme:dark;--bg:#050b17;--panel:rgba(14,27,48,.76);--panel2:rgba(22,31,55,.82);--gold:#7c5cff;--gold2:#6fe3ff;--text:#f7f8ff;--muted:#b0bdd1;--line:rgba(177,205,255,.20);--danger:#ff7eaa}
+html,body{background-color:#050b17}
+body{background:radial-gradient(ellipse at 82% 7%,rgba(255,105,133,.24),transparent 31%),radial-gradient(ellipse at 12% 20%,rgba(32,135,255,.22),transparent 36%),radial-gradient(ellipse at 72% 58%,rgba(124,92,255,.15),transparent 32%),linear-gradient(145deg,#071426 0%,#080d1c 48%,#050913 100%);background-attachment:fixed}
+.site-header,.topbar{background:rgba(5,11,23,.72);border-bottom-color:rgba(151,183,255,.18);box-shadow:0 8px 35px rgba(0,0,0,.18);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.brand strong,.eyebrow,.about-link{color:#91e8ff}
+.brand-logo,.logo{border-color:rgba(126,113,255,.8);box-shadow:0 0 24px rgba(104,94,255,.22)}
+.logo{color:white;background:linear-gradient(135deg,#6e5cff,#21b9ff)}
+.button.primary,.gold-button{color:#fff;background:linear-gradient(120deg,#765bff,#319dff 60%,#33d4e8);border:1px solid rgba(174,195,255,.65);box-shadow:0 7px 24px rgba(75,100,255,.27)}
+.button.secondary,.pill{color:#d4f5ff;background:rgba(255,255,255,.07);border-color:rgba(173,204,255,.24);backdrop-filter:blur(12px)}
+.icon-button{background:rgba(255,255,255,.07);border-color:rgba(173,204,255,.25);box-shadow:inset 0 1px rgba(255,255,255,.08)}
+.hero{border-color:rgba(119,185,255,.34);background:radial-gradient(ellipse at 85% 18%,rgba(255,126,142,.18),transparent 45%),linear-gradient(125deg,rgba(34,99,169,.28),rgba(101,70,190,.16) 55%,rgba(255,135,116,.10)),rgba(11,22,42,.68);box-shadow:inset 0 1px rgba(255,255,255,.10),0 18px 48px rgba(0,0,0,.18);backdrop-filter:blur(18px)}
+.hero h1 span{color:#83e9ff;text-shadow:0 0 25px rgba(66,194,255,.24)}
+.artist-profile-picture,.artist-avatar{border-color:rgba(117,119,255,.9);box-shadow:0 0 0 5px rgba(112,98,255,.12),0 0 30px rgba(55,165,255,.18)}
+.search-box input,.searchbox input,#searchInput{color:white;background:rgba(220,233,255,.09);border-color:rgba(177,205,255,.28);box-shadow:inset 0 1px rgba(255,255,255,.08);backdrop-filter:blur(18px)}
+.search-box input:focus,.searchbox input:focus,#searchInput:focus{border-color:rgba(99,201,255,.85);box-shadow:0 0 0 3px rgba(63,162,255,.12),0 0 25px rgba(70,140,255,.12)}
+.tab-button,.tab{color:#c0c8d9;background:rgba(255,255,255,.055);border-color:rgba(173,204,255,.20);backdrop-filter:blur(12px)}
+.tab-button.active,.tab.active{color:#fff;background:linear-gradient(135deg,#785aff,#378eff);border-color:rgba(182,190,255,.7);box-shadow:0 8px 26px rgba(91,99,255,.28)}
+.song-card{background:linear-gradient(110deg,rgba(20,42,70,.78),rgba(27,27,49,.60) 64%,rgba(85,46,74,.28));border-color:rgba(178,208,255,.22);border-radius:20px;box-shadow:inset 0 1px rgba(255,255,255,.07),0 8px 25px rgba(0,0,0,.12);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.song-card:active{background:linear-gradient(110deg,rgba(42,77,130,.82),rgba(83,56,135,.62))}
+.song-cover,.player-cover{box-shadow:0 5px 18px rgba(0,0,0,.28)}
+.play-button{color:white;background:linear-gradient(135deg,#795cff,#2eaaff);border-color:rgba(194,204,255,.45)}
+.heart-button{color:#e8efff;background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+.heart-button.favorited{color:#ff8ec9;background:rgba(255,82,167,.14);border-color:rgba(255,120,194,.45)}
+.admin-panel,.admin-card,.profile-card{background:rgba(13,26,46,.78);border-color:rgba(173,204,255,.20);box-shadow:inset 0 1px rgba(255,255,255,.06),0 15px 40px rgba(0,0,0,.16);backdrop-filter:blur(16px)}
+.upload-form input:not([type=file]),.admin-form input:not([type=file]),.dialog-card input{background:rgba(4,11,23,.82);border-color:rgba(173,204,255,.22)}
+.upload-form input[type=file]::file-selector-button,.admin-form input[type=file]::file-selector-button{color:#c8f4ff;background:rgba(103,91,255,.15);border-color:rgba(123,185,255,.35)}
+.mini-player{background:linear-gradient(120deg,rgba(17,36,65,.97),rgba(27,29,59,.96) 70%,rgba(68,39,77,.93));border-color:rgba(129,153,255,.72);box-shadow:0 0 0 1px rgba(68,168,255,.12),0 15px 55px rgba(0,0,0,.52),0 0 28px rgba(94,90,255,.15);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.mini-player.player-expanded{background:radial-gradient(ellipse at 80% 15%,rgba(255,112,142,.20),transparent 36%),radial-gradient(ellipse at 15% 15%,rgba(51,154,255,.23),transparent 40%),linear-gradient(155deg,#09172d,#0b0b1b 65%,#100d22)}
+.mini-player.player-expanded .player-cover{border-color:rgba(105,206,255,.6);box-shadow:0 24px 65px rgba(0,0,0,.48),0 0 30px rgba(93,100,255,.17)}
+.mini-player.player-expanded .player-info span{color:#9beaff}
+.skip-controls button{color:#d9f8ff;background:linear-gradient(135deg,rgba(117,88,255,.22),rgba(40,173,255,.13));border-color:rgba(123,185,255,.44)}
+.dialog{background:rgba(13,22,42,.98);border-color:rgba(134,155,255,.45);box-shadow:0 25px 90px rgba(0,0,0,.45)}
+.toast{color:#07111e;background:linear-gradient(110deg,#a9f0ff,#d4c5ff)}
+.bottom-item.active{color:#a7a1ff;text-shadow:0 0 18px rgba(111,104,255,.3)}
+@media(prefers-reduced-motion:no-preference){.button.primary,.gold-button,.tab-button.active,.tab.active{transition:transform .2s ease,box-shadow .2s ease,filter .2s ease}.button.primary:active,.gold-button:active,.tab-button.active:active,.tab.active:active{filter:brightness(1.12)}}
