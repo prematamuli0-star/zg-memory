@@ -11,6 +11,7 @@ let authMode = "signin";
 let deferredInstall = null;
 let currentSongId = null;
 let selectedAlbum = null;
+let adminPanelOpen = false;
 
 const $ = id => document.getElementById(id);
 const FAV_KEY = "zg-memory-favorites-v1";
@@ -208,11 +209,18 @@ function render() {
       <button class="play-button" type="button"
         data-play="${safeText(song.id)}" aria-label="Play">▶</button>
 
-      <button class="heart-button ${favorites.includes(String(song.id)) ? "favorited" : ""}"
-        type="button" data-fav="${safeText(song.id)}"
-        aria-label="Toggle favorite">
-        ${favorites.includes(String(song.id)) ? "♥" : "♡"}
-      </button>
+      ${isAdmin ? `
+        <button class="edit-button song-admin-action" type="button"
+          data-edit="${safeText(song.id)}" aria-label="Edit ${safeText(song.title)}">Edit</button>
+        <button class="delete-button song-admin-action" type="button"
+          data-delete="${safeText(song.id)}" aria-label="Delete ${safeText(song.title)}">Delete</button>
+      ` : `
+        <button class="heart-button ${favorites.includes(String(song.id)) ? "favorited" : ""}"
+          type="button" data-fav="${safeText(song.id)}"
+          aria-label="Toggle favorite">
+          ${favorites.includes(String(song.id)) ? "♥" : "♡"}
+        </button>
+      `}
     </article>
   `).join("");
 
@@ -229,34 +237,7 @@ function render() {
     );
   });
 
-  $("adminPanel")?.classList.toggle("hidden", !isAdmin);
-  renderAdminList();
-}
-
-function renderAdminList() {
-  const host = $("adminSongList");
-  if (!host) return;
-
-  if (!isAdmin) {
-    host.innerHTML = "";
-    return;
-  }
-
-  host.innerHTML = songs.map((song, index) => `
-    <div class="admin-song-row">
-      <span class="song-number">${String(index + 1).padStart(2, "0")}</span>
-      <img src="${safeText(coverOf(song))}" alt=""
-        onerror="this.onerror=null;this.src='./icon.svg'">
-      <div class="song-copy">
-        <h3>${safeText(song.title)}</h3>
-        <p>${safeText(metaOf(song))}</p>
-      </div>
-      <button class="edit-button" type="button"
-        data-edit="${safeText(song.id)}">Edit</button>
-      <button class="delete-button" type="button"
-        data-delete="${safeText(song.id)}">Delete</button>
-    </div>
-  `).join("") || '<p class="muted">No songs uploaded yet.</p>';
+  $("adminPanel")?.classList.toggle("hidden", !isAdmin || !adminPanelOpen);
 }
 
 /* Load songs from Supabase */
@@ -536,8 +517,6 @@ $("clearSearch")?.addEventListener("click", () => {
   $("searchInput")?.focus();
 });
 
-$("headerFav")?.addEventListener("click", () => setView("favorites"));
-
 /* Profile and authentication */
 function openAuth() {
   const modal = $("authDialog");
@@ -646,6 +625,7 @@ async function signOut() {
 
   currentUser = null;
   isAdmin = false;
+  adminPanelOpen = false;
   toast("Signed out.");
   await refreshSession();
 }
@@ -685,9 +665,13 @@ async function refreshSession() {
   }
 }
 
-  $("adminLoginBtn")?.classList.toggle("hidden", isAdmin);
-  $("adminCard")?.classList.toggle("hidden", !isAdmin);
-  $("adminPanel")?.classList.toggle("hidden", !isAdmin);
+  const adminButton = $("adminLoginBtn");
+  if (adminButton) {
+    adminButton.classList.toggle("hidden", !isAdmin);
+    adminButton.textContent = adminPanelOpen ? "Close Admin" : "Admin Panel";
+    adminButton.setAttribute("aria-expanded", String(isAdmin && adminPanelOpen));
+  }
+  $("adminPanel")?.classList.toggle("hidden", !isAdmin || !adminPanelOpen);
 
   if ($("profileAction")) {
     $("profileAction").textContent = currentUser ? "Sign out" : "Sign in";
@@ -704,20 +688,30 @@ $("profileAction")?.addEventListener("click", () => {
   }
 });
 
-/* Admin login button */
+/* Admin panel toggle: only shown after the signed-in account is verified as admin */
 $("adminLoginBtn")?.addEventListener("click", () => {
-  if (currentUser) {
-    if (isAdmin) {
-      $("adminCard")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    } else {
-      toast("This account does not have admin access.");
-    }
-  } else {
-    openAuth();
+  if (!isAdmin) {
+    toast("Admin access required.");
+    return;
   }
+  adminPanelOpen = !adminPanelOpen;
+  $("adminPanel")?.classList.toggle("hidden", !adminPanelOpen);
+  $("adminLoginBtn").textContent = adminPanelOpen ? "Close Admin" : "Admin Panel";
+  $("adminLoginBtn").setAttribute("aria-expanded", String(adminPanelOpen));
+  if (adminPanelOpen) {
+    $("adminPanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+});
+
+$("adminPanelCloseBtn")?.addEventListener("click", () => {
+  adminPanelOpen = false;
+  $("adminPanel")?.classList.add("hidden");
+  const adminButton = $("adminLoginBtn");
+  if (adminButton) {
+    adminButton.textContent = "Admin Panel";
+    adminButton.setAttribute("aria-expanded", "false");
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
 /* Admin logout */
