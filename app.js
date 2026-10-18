@@ -150,13 +150,13 @@ function render() {
 
       albumsHost.innerHTML = entries.map(([name, tracks], index) => {
         const coverSong = tracks.find(song => song.cover_url) || tracks[0];
-        return `<div class="album-card-wrap">
+        return `<div class="album-card-wrap ${isAdmin ? "admin-sortable" : ""}" ${isAdmin ? `data-album-drag="${safeText(name)}"` : ""}>
           <button class="album-card" type="button" data-open-album="${safeText(name)}" aria-label="Open album ${safeText(name)}">
             <span class="album-number">${index + 1}</span>
             <img src="${safeText(coverOf(coverSong))}" alt="" loading="lazy" onerror="this.onerror=null;this.src='./icon.svg'">
             <strong>${safeText(name)}</strong><span>${tracks.length} song${tracks.length === 1 ? "" : "s"}</span>
           </button>
-          ${isAdmin ? `<div class="order-controls"><button type="button" data-album-up="${safeText(name)}" aria-label="Move album up" ${index===0?'disabled':''}>↑</button><button type="button" data-album-down="${safeText(name)}" aria-label="Move album down" ${index===entries.length-1?'disabled':''}>↓</button></div>` : ""}
+          ${isAdmin ? `<span class="drag-hint" aria-hidden="true">⠿ Drag to reorder</span>` : ""}
         </div>`;
       }).join("");
 
@@ -182,7 +182,7 @@ function render() {
   }
 
   $("songList").innerHTML = list.map((song, index) => `
-    <article class="song-card">
+    <article class="song-card ${isAdmin ? "admin-sortable" : ""}" ${isAdmin ? `data-song-drag="${safeText(song.id)}"` : ""}>
       <span class="song-number">${String(index + 1).padStart(2, "0")}</span>
 
       <button class="song-main" type="button"
@@ -201,7 +201,7 @@ function render() {
         data-play="${safeText(song.id)}" aria-label="Play">▶</button>
 
       ${isAdmin ? `
-        <div class="song-admin-actions"><button class="song-admin-action order-button" type="button" data-song-up="${safeText(song.id)}" aria-label="Move song up" ${index===0?'disabled':''}>↑</button><button class="song-admin-action order-button" type="button" data-song-down="${safeText(song.id)}" aria-label="Move song down" ${index===list.length-1?'disabled':''}>↓</button></div>
+        <span class="drag-hint song-drag-hint" aria-hidden="true">⠿</span>
         <button class="edit-button song-admin-action" type="button"
           data-edit="${safeText(song.id)}" aria-label="Edit ${safeText(song.title)}">Edit</button>
         <button class="delete-button song-admin-action" type="button"
@@ -220,6 +220,9 @@ function render() {
 
   $("emptyState")?.classList.toggle("hidden", inAlbums || !noSongs);
   $("songList").classList.toggle("hidden", inAlbums || noSongs);
+  // Attach Sortable only after visibility is updated; otherwise returning from Albums
+  // can leave the song list without drag handlers.
+  setupDragSorting();
 
   document.querySelectorAll("[data-view]").forEach(button => {
     button.classList.toggle(
@@ -454,45 +457,91 @@ function openAlbum(name) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-/* Admin ordering — persists in Supabase */
-async function moveSong(id, direction) {
-  if (!isAdmin || !sb) return;
-  const ordered = [...songs].sort((a,b) => Number(a.sort_order||0)-Number(b.sort_order||0));
-  const index = ordered.findIndex(song => String(song.id) === String(id));
-  const target = index + direction;
-  if (index < 0 || target < 0 || target >= ordered.length) return;
-  const first = ordered[index], second = ordered[target];
-  const firstOrder = Number(first.sort_order ?? index), secondOrder = Number(second.sort_order ?? target);
-  const a = await sb.from("songs").update({sort_order: secondOrder}).eq("id", first.id);
-  if (a.error) { toast("Song order save failed. Run the SQL setup first."); console.error(a.error); return; }
-  const b = await sb.from("songs").update({sort_order: firstOrder}).eq("id", second.id);
-  if (b.error) { toast("Could not finish song reorder."); console.error(b.error); }
-  await loadSongs();
+/* Admin drag-and-drop ordering — persisted in Supabase */
+let albumSortable = null;
+let songSortable = null;
+
+function setupDragSorting() {
+  if (typeof Sortable === "undefined") return;
+  const albumsHost = $("albumsView");
+  const songsHost = $("songList");
+  if (albumSortable) { albumSortable.destroy(); albumSortable = null; }
+  if (songSortable) { songSortable.destroy(); songSortable = null; }
+  if (!isAdmin) return;
+
+  if (albumsHost && currentView === "albums" && !albumsHost.classList.contains("hidden")) {
+    albumSortable = Sortable.create(albumsHost, {
+      animation: 180,
+      draggable: ".album-card-wrap[data-album-drag]",
+      handle: ".album-card img, .album-number, .drag-hint",
+      delay: 180,
+      delayOnTouchOnly: true,
+      touchStartThreshold: 5,
+      ghostClass: "sort-ghost",
+      chosenClass: "sort-chosen",
+      onEnd: async () => saveAlbumOrderFromDOM()
+    });
+  }
+
+  if (songsHost && !songsHost.classList.contains("hidden") &&
+      ["home", "library", "favorites", "albumSongs"].includes(currentView)) {
+    songSortable = Sortable.create(songsHost, {
+      animation: 180,
+      draggable: ".song-card[data-song-drag]",
+      handle: ".song-cover, .song-number, .song-drag-hint",
+      delay: 180,
+      delayOnTouchOnly: true,
+      touchStartThreshold: 5,
+      ghostClass: "sort-ghost",
+      chosenClass: "sort-chosen",
+      onEnd: async () => saveSongOrderFromDOM()
+    });
+  }
 }
-async function moveAlbum(name, direction) {
+
+async function saveAlbumOrderFromDOM() {
   if (!isAdmin || !sb) return;
-  const names = [...new Set(songs.map(song => (song.album || "Unsorted").trim() || "Unsorted"))]
+  const host = $("albumsView");
+  const visibleNames = [...host.querySelectorAll("[data-album-drag]")].map(el => el.dataset.albumDrag);
+  const allNames = [...new Set(songs.map(song => (song.album || "Unsorted").trim() || "Unsorted"))]
     .sort((a,b) => (albumOrders[a] ?? 999999) - (albumOrders[b] ?? 999999) || a.localeCompare(b));
-  const i = names.indexOf(name), j = i + direction;
-  if (i < 0 || j < 0 || j >= names.length) return;
-  [names[i], names[j]] = [names[j], names[i]];
-  const rows = names.map((album_name, sort_order) => ({album_name, sort_order}));
-  const {error} = await sb.from("album_order").upsert(rows, {onConflict:"album_name"});
-  if (error) { toast("Album order save failed. Run the SQL setup first."); console.error(error); return; }
+  const visibleSet = new Set(visibleNames);
+  const names = [...visibleNames, ...allNames.filter(name => !visibleSet.has(name))];
+  const rows = names.map((album_name, sort_order) => ({ album_name, sort_order }));
+  const { error } = await sb.from("album_order").upsert(rows, { onConflict: "album_name" });
+  if (error) {
+    console.error("Album reorder failed:", error);
+    toast("Album order save failed: " + (error.message || error.details || error.code || "check Supabase permissions"));
+    await loadSongs();
+    return;
+  }
   albumOrders = Object.fromEntries(rows.map(row => [row.album_name, row.sort_order]));
   render();
+  toast("Album order saved.");
+}
+
+async function saveSongOrderFromDOM() {
+  if (!isAdmin || !sb) return;
+  const host = $("songList");
+  const visibleIds = [...host.querySelectorAll("[data-song-drag]")].map(el => el.dataset.songDrag);
+  const visibleSet = new Set(visibleIds);
+  const existing = [...songs].sort((a,b) => Number(a.sort_order ?? 0) - Number(b.sort_order ?? 0));
+  const orderedIds = [...visibleIds, ...existing.filter(song => !visibleSet.has(String(song.id))).map(song => String(song.id))];
+  for (let i = 0; i < orderedIds.length; i++) {
+    const { error } = await sb.from("songs").update({ sort_order: i }).eq("id", orderedIds[i]);
+    if (error) {
+      console.error("Song reorder failed:", error);
+      toast("Song order save failed: " + (error.message || error.details || error.code || "check Supabase permissions"));
+      await loadSongs();
+      return;
+    }
+  }
+  await loadSongs();
+  toast("Song order saved.");
 }
 
 /* Click actions */
 document.addEventListener("click", async event => {
-  const songUp = event.target.closest("[data-song-up]");
-  if (songUp) { await moveSong(songUp.dataset.songUp, -1); return; }
-  const songDown = event.target.closest("[data-song-down]");
-  if (songDown) { await moveSong(songDown.dataset.songDown, 1); return; }
-  const albumUp = event.target.closest("[data-album-up]");
-  if (albumUp) { event.stopPropagation(); await moveAlbum(albumUp.dataset.albumUp, -1); return; }
-  const albumDown = event.target.closest("[data-album-down]");
-  if (albumDown) { event.stopPropagation(); await moveAlbum(albumDown.dataset.albumDown, 1); return; }
 
   const playButton = event.target.closest("[data-play]");
   if (playButton) {
@@ -578,7 +627,7 @@ $("profileTop")?.addEventListener("click", openProfile);
 $("profileNav")?.addEventListener("click", openProfile);
 $("closeAuth")?.addEventListener("click", closeAuth);
 
-$("authModeToggle")?.addEventListener("click", () => {
+$("toggleAuth")?.addEventListener("click", () => {
   authMode = authMode === "signin" ? "signup" : "signin";
 
   if ($("authTitle")) {
@@ -591,8 +640,8 @@ $("authModeToggle")?.addEventListener("click", () => {
       authMode === "signin" ? "Sign in" : "Sign up";
   }
 
-  if ($("authModeToggle")) {
-    $("authModeToggle").textContent =
+  if ($("toggleAuth")) {
+    $("toggleAuth").textContent =
       authMode === "signin"
         ? "Need an account? Sign up"
         : "Already registered? Sign in";
