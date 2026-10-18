@@ -237,7 +237,8 @@ function render() {
     );
   });
 
-  $("adminPanel")?.classList.toggle("hidden", !isAdmin || !adminPanelOpen);
+  $("adminModal")?.classList.toggle("hidden", !isAdmin || !adminPanelOpen);
+  document.body.classList.toggle("admin-modal-open", isAdmin && adminPanelOpen);
 }
 
 /* Load songs from Supabase */
@@ -626,6 +627,8 @@ async function signOut() {
   currentUser = null;
   isAdmin = false;
   adminPanelOpen = false;
+  $("adminModal")?.classList.add("hidden");
+  document.body.classList.remove("admin-modal-open");
   toast("Signed out.");
   await refreshSession();
 }
@@ -671,7 +674,8 @@ async function refreshSession() {
     adminButton.textContent = adminPanelOpen ? "Close Admin" : "Admin Panel";
     adminButton.setAttribute("aria-expanded", String(isAdmin && adminPanelOpen));
   }
-  $("adminPanel")?.classList.toggle("hidden", !isAdmin || !adminPanelOpen);
+  $("adminModal")?.classList.toggle("hidden", !isAdmin || !adminPanelOpen);
+  document.body.classList.toggle("admin-modal-open", isAdmin && adminPanelOpen);
 
   if ($("profileAction")) {
     $("profileAction").textContent = currentUser ? "Sign out" : "Sign in";
@@ -688,30 +692,36 @@ $("profileAction")?.addEventListener("click", () => {
   }
 });
 
-/* Admin panel toggle: only shown after the signed-in account is verified as admin */
+/* Admin panel modal: only open for a verified admin */
+function closeAdminPanel() {
+  adminPanelOpen = false;
+  $("adminModal")?.classList.add("hidden");
+  document.body.classList.remove("admin-modal-open");
+  const adminButton = $("adminLoginBtn");
+  if (adminButton) {
+    adminButton.textContent = "Admin Panel";
+    adminButton.setAttribute("aria-expanded", "false");
+  }
+}
+
 $("adminLoginBtn")?.addEventListener("click", () => {
   if (!isAdmin) {
     toast("Admin access required.");
     return;
   }
   adminPanelOpen = !adminPanelOpen;
-  $("adminPanel")?.classList.toggle("hidden", !adminPanelOpen);
+  $("adminModal")?.classList.toggle("hidden", !adminPanelOpen);
+  document.body.classList.toggle("admin-modal-open", adminPanelOpen);
   $("adminLoginBtn").textContent = adminPanelOpen ? "Close Admin" : "Admin Panel";
   $("adminLoginBtn").setAttribute("aria-expanded", String(adminPanelOpen));
-  if (adminPanelOpen) {
-    $("adminPanel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
 });
 
-$("adminPanelCloseBtn")?.addEventListener("click", () => {
-  adminPanelOpen = false;
-  $("adminPanel")?.classList.add("hidden");
-  const adminButton = $("adminLoginBtn");
-  if (adminButton) {
-    adminButton.textContent = "Admin Panel";
-    adminButton.setAttribute("aria-expanded", "false");
-  }
-  window.scrollTo({ top: 0, behavior: "smooth" });
+$("adminPanelCloseBtn")?.addEventListener("click", closeAdminPanel);
+$("adminModal")?.addEventListener("click", event => {
+  if (event.target === $("adminModal")) closeAdminPanel();
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && adminPanelOpen) closeAdminPanel();
 });
 
 /* Admin logout */
