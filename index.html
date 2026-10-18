@@ -8,10 +8,10 @@
   <title>ZG Memory | Music Player</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=12">
+  <link rel="stylesheet" href="./styles.css?v=13">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js" defer></script>
-  <script src="./app.js?v=8" defer></script>
+  <script src="./app.js?v=13" defer></script>
   <style>
     .albums-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:14px;margin:14px 0 22px}
     .album-card{display:block;text-align:left;min-width:0;padding:10px;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--text);cursor:pointer}
@@ -31,6 +31,10 @@
     .song-admin-actions{display:flex;gap:6px;align-items:center}
     .song-admin-action{border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer}
     .song-admin-action[data-delete]{color:#ff7777}
+    .album-card-wrap{min-width:0;position:relative}
+    .album-number{position:absolute;z-index:1;top:17px;left:17px;background:#090d1dcc;color:#fff;border:1px solid #ffffff35;border-radius:9px;padding:3px 7px;font-size:11px}
+    .order-controls{display:flex;justify-content:center;gap:8px;padding:5px 0 0}
+    .order-controls button,.order-button{min-width:34px;min-height:32px;border:1px solid rgba(150,175,255,.35);border-radius:9px;background:rgba(102,88,255,.18);color:#fff;font-size:17px;font-weight:700;cursor:pointer}
   </style>
 
 </head>
