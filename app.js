@@ -6,6 +6,7 @@ let sb = null;
 let currentUser = null;
 let isAdmin = false;
 let songs = [];
+let albumOrders = {};
 let currentView = "home";
 let authMode = "signin";
 let deferredInstall = null;
@@ -142,31 +143,21 @@ function render() {
 
       const entries = [...groups.entries()]
         .filter(([name, tracks]) =>
-          !query ||
-          name.toLowerCase().includes(query) ||
-          tracks.some(song =>
-            [song.title, song.artist, song.year]
-              .filter(Boolean)
-              .join(" ")
-              .toLowerCase()
-              .includes(query)
-          )
+          !query || name.toLowerCase().includes(query) || tracks.some(song =>
+            [song.title, song.artist, song.year].filter(Boolean).join(" ").toLowerCase().includes(query))
         )
-        .sort((a, b) => a[0].localeCompare(b[0]));
+        .sort((a, b) => (albumOrders[a[0]] ?? 999999) - (albumOrders[b[0]] ?? 999999) || a[0].localeCompare(b[0]));
 
-      albumsHost.innerHTML = entries.map(([name, tracks]) => {
+      albumsHost.innerHTML = entries.map(([name, tracks], index) => {
         const coverSong = tracks.find(song => song.cover_url) || tracks[0];
-
-        return `
-          <button class="album-card" type="button"
-            data-open-album="${safeText(name)}"
-            aria-label="Open album ${safeText(name)}">
-            <img src="${safeText(coverOf(coverSong))}" alt=""
-              loading="lazy"
-              onerror="this.onerror=null;this.src='./icon.svg'">
-            <strong>${safeText(name)}</strong>
-            <span>${tracks.length} song${tracks.length === 1 ? "" : "s"}</span>
-          </button>`;
+        return `<div class="album-card-wrap">
+          <button class="album-card" type="button" data-open-album="${safeText(name)}" aria-label="Open album ${safeText(name)}">
+            <span class="album-number">${index + 1}</span>
+            <img src="${safeText(coverOf(coverSong))}" alt="" loading="lazy" onerror="this.onerror=null;this.src='./icon.svg'">
+            <strong>${safeText(name)}</strong><span>${tracks.length} song${tracks.length === 1 ? "" : "s"}</span>
+          </button>
+          ${isAdmin ? `<div class="order-controls"><button type="button" data-album-up="${safeText(name)}" aria-label="Move album up" ${index===0?'disabled':''}>↑</button><button type="button" data-album-down="${safeText(name)}" aria-label="Move album down" ${index===entries.length-1?'disabled':''}>↓</button></div>` : ""}
+        </div>`;
       }).join("");
 
       albumsHost.classList.remove("hidden");
@@ -210,6 +201,7 @@ function render() {
         data-play="${safeText(song.id)}" aria-label="Play">▶</button>
 
       ${isAdmin ? `
+        <div class="song-admin-actions"><button class="song-admin-action order-button" type="button" data-song-up="${safeText(song.id)}" aria-label="Move song up" ${index===0?'disabled':''}>↑</button><button class="song-admin-action order-button" type="button" data-song-down="${safeText(song.id)}" aria-label="Move song down" ${index===list.length-1?'disabled':''}>↓</button></div>
         <button class="edit-button song-admin-action" type="button"
           data-edit="${safeText(song.id)}" aria-label="Edit ${safeText(song.title)}">Edit</button>
         <button class="delete-button song-admin-action" type="button"
@@ -252,8 +244,8 @@ async function loadSongs() {
   setStatus("Loading music…");
 
   const { data, error } = await sb.from("songs")
-    .select("id,title,artist,album,year,cover_url,cover_path,audio_path,created_at")
-    .order("created_at", { ascending: true });
+    .select("id,title,artist,album,year,cover_url,cover_path,audio_path,created_at,sort_order")
+    .order("sort_order", { ascending: true }).order("created_at", { ascending: true });
 
   if (error) {
     console.error(error);
@@ -262,6 +254,9 @@ async function loadSongs() {
   }
 
   songs = data || [];
+  const albumResult = await sb.from("album_order").select("album_name,sort_order").order("sort_order", {ascending:true});
+  if (albumResult.error) console.warn("Album order table not ready:", albumResult.error.message);
+  albumOrders = Object.fromEntries((albumResult.data || []).map(row => [row.album_name, Number(row.sort_order)]));
   setStatus(songs.length ? "Tap a song to listen." : "No songs uploaded yet.");
   render();
 }
@@ -459,8 +454,46 @@ function openAlbum(name) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+/* Admin ordering — persists in Supabase */
+async function moveSong(id, direction) {
+  if (!isAdmin || !sb) return;
+  const ordered = [...songs].sort((a,b) => Number(a.sort_order||0)-Number(b.sort_order||0));
+  const index = ordered.findIndex(song => String(song.id) === String(id));
+  const target = index + direction;
+  if (index < 0 || target < 0 || target >= ordered.length) return;
+  const first = ordered[index], second = ordered[target];
+  const firstOrder = Number(first.sort_order ?? index), secondOrder = Number(second.sort_order ?? target);
+  const a = await sb.from("songs").update({sort_order: secondOrder}).eq("id", first.id);
+  if (a.error) { toast("Song order save failed. Run the SQL setup first."); console.error(a.error); return; }
+  const b = await sb.from("songs").update({sort_order: firstOrder}).eq("id", second.id);
+  if (b.error) { toast("Could not finish song reorder."); console.error(b.error); }
+  await loadSongs();
+}
+async function moveAlbum(name, direction) {
+  if (!isAdmin || !sb) return;
+  const names = [...new Set(songs.map(song => (song.album || "Unsorted").trim() || "Unsorted"))]
+    .sort((a,b) => (albumOrders[a] ?? 999999) - (albumOrders[b] ?? 999999) || a.localeCompare(b));
+  const i = names.indexOf(name), j = i + direction;
+  if (i < 0 || j < 0 || j >= names.length) return;
+  [names[i], names[j]] = [names[j], names[i]];
+  const rows = names.map((album_name, sort_order) => ({album_name, sort_order}));
+  const {error} = await sb.from("album_order").upsert(rows, {onConflict:"album_name"});
+  if (error) { toast("Album order save failed. Run the SQL setup first."); console.error(error); return; }
+  albumOrders = Object.fromEntries(rows.map(row => [row.album_name, row.sort_order]));
+  render();
+}
+
 /* Click actions */
 document.addEventListener("click", async event => {
+  const songUp = event.target.closest("[data-song-up]");
+  if (songUp) { await moveSong(songUp.dataset.songUp, -1); return; }
+  const songDown = event.target.closest("[data-song-down]");
+  if (songDown) { await moveSong(songDown.dataset.songDown, 1); return; }
+  const albumUp = event.target.closest("[data-album-up]");
+  if (albumUp) { event.stopPropagation(); await moveAlbum(albumUp.dataset.albumUp, -1); return; }
+  const albumDown = event.target.closest("[data-album-down]");
+  if (albumDown) { event.stopPropagation(); await moveAlbum(albumDown.dataset.albumDown, 1); return; }
+
   const playButton = event.target.closest("[data-play]");
   if (playButton) {
     await playSong(playButton.dataset.play);
@@ -837,7 +870,8 @@ async function uploadSong(event) {
         year,
         cover_url: coverData.publicUrl,
         cover_path: coverPath,
-        audio_path: audioPath
+        audio_path: audioPath,
+        sort_order: songs.length
       });
 
       if (result.error) {
