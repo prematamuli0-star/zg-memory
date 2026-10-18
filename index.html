@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="./styles.css?v=12">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js" defer></script>
-  <script src="./app.js?v=5" defer></script>
+  <script src="./app.js?v=6" defer></script>
   <style>
     .albums-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:14px;margin:14px 0 22px}
     .album-card{display:block;text-align:left;min-width:0;padding:10px;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--text);cursor:pointer}
@@ -19,6 +19,9 @@
     .album-card strong{display:block;overflow-wrap:anywhere;font-size:14px}
     .album-card span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
     #backAlbumsBtn{margin:0 0 12px}
+    .song-admin-action{padding:8px 10px;min-width:48px;font-size:12px}
+    .song-card:has(.song-admin-action){gap:6px}
+    @media(max-width:480px){.song-admin-action{padding:7px 8px;font-size:11px}}
   </style>
 
 </head>
@@ -29,8 +32,7 @@
       <span>ZG <strong>Memory</strong></span>
     </a>
     <div class="top-actions">
-      <button id="headerFav" class="pill" type="button" aria-label="Favorites">♡ <span id="favCount">0</span></button>
-      <button id="adminLoginBtn" class="button secondary" type="button">Admin Login</button>
+      <button id="adminLoginBtn" class="button secondary hidden" type="button" aria-controls="adminPanel" aria-expanded="false">Admin Panel</button>
       <button id="profileTop" class="icon-button" type="button" aria-label="Profile">♙</button>
     </div>
   </header>
@@ -83,7 +85,10 @@
     <section id="adminPanel" class="admin-panel hidden">
       <div class="section-heading">
         <div><p class="eyebrow">MANAGE YOUR COLLECTION</p><h2>Admin Panel</h2></div>
-        <button id="adminLogoutBtn" class="button secondary" type="button">Logout</button>
+        <div class="top-actions">
+          <button id="adminPanelCloseBtn" class="button secondary" type="button">Close</button>
+          <button id="adminLogoutBtn" class="button secondary" type="button">Logout</button>
+        </div>
       </div>
       <form id="uploadForm" class="upload-form">
         <h3>Upload New Song</h3>
@@ -98,7 +103,6 @@
         <button id="uploadBtn" class="button primary" type="submit">Upload Song</button>
         <p id="uploadStatus" class="message" role="status" aria-live="polite"></p>
       </form>
-      <div class="admin-songs-section"><h3>Manage Songs</h3><div id="adminSongList" class="admin-song-list"></div></div>
     </section>
   </main>
 
