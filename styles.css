@@ -1645,3 +1645,8 @@ body.player-open{overflow:hidden;touch-action:none}
     display: none !important;
   }
 }
+
+/* Full-screen player: hide music/lyrics icon */
+#miniPlayer.player-expanded .player-top-lyrics {
+  display: none !important;
+}
