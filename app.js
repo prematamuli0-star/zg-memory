@@ -285,6 +285,9 @@ async function playSong(id) {
   $("playerCover").src = coverOf(song);
   $("playerTitle").textContent = song.title;
   $("playerArtist").textContent = metaOf(song);
+  if ($("miniPlayerCover")) $("miniPlayerCover").src = coverOf(song);
+  if ($("miniPlayerTitle")) $("miniPlayerTitle").textContent = song.title;
+  if ($("miniPlayerArtist")) $("miniPlayerArtist").textContent = metaOf(song);
 
   const audio = $("audio");
   audio.src = data.publicUrl;
@@ -374,8 +377,8 @@ $("repeatSong")?.addEventListener("click", event => {
   event.stopPropagation();
   repeatSongEnabled = !repeatSongEnabled;
 
-  $("repeatSong").textContent =
-    repeatSongEnabled ? "Repeat: On" : "Repeat: Off";
+  $("repeatSong").textContent = "⟳";
+  $("repeatSong").classList.toggle("is-active", repeatSongEnabled);
 
   $("repeatSong").setAttribute(
     "aria-pressed", String(repeatSongEnabled)
@@ -386,8 +389,8 @@ $("shuffleSong")?.addEventListener("click", event => {
   event.stopPropagation();
   shuffleSongEnabled = !shuffleSongEnabled;
 
-  $("shuffleSong").textContent =
-    shuffleSongEnabled ? "Shuffle: On" : "Shuffle: Off";
+  $("shuffleSong").textContent = "⤨";
+  $("shuffleSong").classList.toggle("is-active", shuffleSongEnabled);
 
   $("shuffleSong").setAttribute(
     "aria-pressed", String(shuffleSongEnabled)
@@ -396,31 +399,55 @@ $("shuffleSong")?.addEventListener("click", event => {
 
 /* Full-screen and mini-player controls */
 function expandPlayer() {
-  $("miniPlayer")?.classList.add("player-expanded");
+  const player = $("miniPlayer"); if (!player) return;
+  player.classList.add("player-expanded"); document.body.classList.add("player-open");
 }
-
 function minimizePlayer() {
-  $("miniPlayer")?.classList.remove("player-expanded");
+  const player = $("miniPlayer"); if (!player) return;
+  player.classList.remove("player-expanded"); document.body.classList.remove("player-open");
 }
-
+function togglePlayback() {
+  const audio = $("audio"); if (!audio) return;
+  if (audio.paused) audio.play().catch(() => toast("Tap Play to start the song.")); else audio.pause();
+}
+function formatPlayerTime(seconds) {
+  if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
+  return `${Math.floor(seconds / 60)}:${Math.floor(seconds % 60).toString().padStart(2, "0")}`;
+}
+function updatePlayerUI() {
+  const audio = $("audio"); if (!audio) return;
+  const icon = (!audio.paused && !audio.ended) ? "Ⅱ" : "▶";
+  if ($("playerPlayPause")) $("playerPlayPause").textContent = icon;
+  if ($("miniPlayPause")) $("miniPlayPause").textContent = icon;
+  const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
+  const current = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
+  if ($("playerCurrentTime")) $("playerCurrentTime").textContent = formatPlayerTime(current);
+  if ($("playerDuration")) $("playerDuration").textContent = formatPlayerTime(duration);
+  if ($("playerProgress") && !$("playerProgress").matches(":active")) $("playerProgress").value = duration ? Math.round(current / duration * 1000) : 0;
+  if ($("miniProgressFill")) $("miniProgressFill").style.width = `${duration ? current / duration * 100 : 0}%`;
+}
 $("miniPlayer")?.addEventListener("click", event => {
-  if (event.target.closest("#closePlayer")) return;
-  if (event.target.closest("audio")) return;
-  if (event.target.closest("#back10, #forward10")) return;
-  expandPlayer();
+  if (event.target.closest("button, input, audio")) return;
+  if (!$("miniPlayer").classList.contains("player-expanded")) expandPlayer();
 });
-
-$("closePlayer")?.addEventListener("click", event => {
-  event.stopPropagation();
-
-  if ($("miniPlayer").classList.contains("player-expanded")) {
-    minimizePlayer();
-  } else {
-    $("audio").pause();
-    $("miniPlayer").classList.add("hidden");
-  }
+$("minimizePlayer")?.addEventListener("click", event => { event.stopPropagation(); minimizePlayer(); });
+$("expandPlayer")?.addEventListener("click", event => { event.stopPropagation(); expandPlayer(); });
+$("playerPlayPause")?.addEventListener("click", event => { event.stopPropagation(); togglePlayback(); });
+$("miniPlayPause")?.addEventListener("click", event => { event.stopPropagation(); togglePlayback(); });
+$("miniNextSong")?.addEventListener("click", event => { event.stopPropagation(); playNextSong(); });
+$("miniPreviousSong")?.addEventListener("click", event => { event.stopPropagation(); playPreviousSong(); });
+$("playerProgress")?.addEventListener("input", event => { const audio = $("audio"); if (audio && Number.isFinite(audio.duration) && audio.duration > 0) audio.currentTime = Number(event.target.value) / 1000 * audio.duration; });
+$("playerVolume")?.addEventListener("input", event => { const audio = $("audio"); if (audio) audio.volume = Number(event.target.value); });
+$("playerFavorite")?.addEventListener("click", event => {
+  event.stopPropagation(); if (currentSongId == null) return;
+  const key = String(currentSongId);
+  favorites = favorites.includes(key) ? favorites.filter(id => id !== key) : [...favorites, key];
+  saveFavorites(); render(); toast(favorites.includes(key) ? "Added to favorites" : "Removed from favorites");
 });
-
+$("playerLyrics")?.addEventListener("click", event => { event.stopPropagation(); toast("Lyrics are not available for this song yet."); });
+$("playerMore")?.addEventListener("click", event => { event.stopPropagation(); toast("ZG Memory player options"); });
+["play", "pause", "timeupdate", "durationchange", "loadedmetadata"].forEach(name => $("audio")?.addEventListener(name, updatePlayerUI));
+$("audio")?.addEventListener("volumechange", () => { if ($("playerVolume")) $("playerVolume").value = $("audio").volume; });
 /* Skip 10 seconds backward or forward */
 function skipAudio(seconds) {
   const audio = $("audio");
