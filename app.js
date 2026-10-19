@@ -432,10 +432,15 @@ $("miniPlayer")?.addEventListener("click", event => {
 });
 $("minimizePlayer")?.addEventListener("click", event => { event.stopPropagation(); minimizePlayer(); });
 $("expandPlayer")?.addEventListener("click", event => { event.stopPropagation(); expandPlayer(); });
-$("hideMiniPlayer")?.addEventListener("click", event => {
+$("#hideMiniPlayer")?.addEventListener("click", event => {
   event.stopPropagation();
+  const audio = $("#audio");
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0;
+  }
+  $("#miniPlayer")?.classList.add("hidden");
   minimizePlayer();
-  $("miniPlayer")?.classList.add("hidden");
 });
 $("playerPlayPause")?.addEventListener("click", event => { event.stopPropagation(); togglePlayback(); });
 $("miniPlayPause")?.addEventListener("click", event => { event.stopPropagation(); togglePlayback(); });
