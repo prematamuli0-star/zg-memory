@@ -1650,3 +1650,84 @@ body.player-open{overflow:hidden;touch-action:none}
 #miniPlayer.player-expanded .player-top-lyrics {
   display: none !important;
 }
+/* ZG Memory — compact mini-player layout fix */
+@media (max-width: 767px) {
+  #miniPlayer:not(.player-expanded) {
+    position: fixed !important;
+    top: auto !important;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 8px !important;
+    right: 8px !important;
+    width: auto !important;
+    height: 70px !important;
+    min-height: 70px !important;
+    max-height: 70px !important;
+    margin: 0 !important;
+    padding: 7px 9px 12px !important;
+    box-sizing: border-box !important;
+    z-index: 9998 !important;
+    overflow: hidden !important;
+  }
+
+  #miniPlayer:not(.player-expanded) > .mini-player-compact {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    gap: 6px !important;
+  }
+
+  #miniPlayer:not(.player-expanded) .mini-player-cover {
+    width: 42px !important;
+    height: 42px !important;
+    flex: 0 0 42px !important;
+    object-fit: cover !important;
+    border-radius: 7px !important;
+  }
+
+  #miniPlayer:not(.player-expanded) .mini-player-info {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #miniPlayer:not(.player-expanded) .mini-player-info strong,
+  #miniPlayer:not(.player-expanded) .mini-player-info span {
+    display: block !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+
+  #miniPlayer:not(.player-expanded) .mini-player-compact button {
+    flex: 0 0 30px !important;
+    width: 30px !important;
+    height: 34px !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+  }
+
+  #miniPlayer:not(.player-expanded) .mini-player-compact .mini-play-pause {
+    flex-basis: 38px !important;
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  #miniPlayer:not(.player-expanded) .mini-progress-track {
+    position: absolute !important;
+    left: 9px !important;
+    right: 9px !important;
+    bottom: 4px !important;
+  }
+
+  body {
+    padding-bottom: 95px !important;
+  }
+
+  #songList,
+  .song-list,
+  .songs-list {
+    padding-bottom: 100px !important;
+  }
+}
