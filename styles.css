@@ -1590,3 +1590,58 @@ body.player-open{overflow:hidden;touch-action:none}
 @media (max-width: 380px) {
   #miniPlayer.player-expanded .player-top-lyrics { right: 108px !important; width: 38px !important; height: 38px !important; }
 }
+/* ZG MEMORY — FINAL PLAYER LAYOUT PATCH */
+@media (max-width: 767px) {
+  #miniPlayer.player-expanded {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding:
+      calc(64px + env(safe-area-inset-top, 0px))
+      16px
+      calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: space-evenly !important;
+    gap: clamp(8px, 1.5vh, 16px) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+  }
+
+  #miniPlayer.player-expanded .player-cover {
+    width: min(72vw, 320px) !important;
+    height: min(72vw, 320px) !important;
+    max-height: 29dvh !important;
+    flex: 0 1 auto !important;
+    margin: 0 !important;
+  }
+
+  #miniPlayer.player-expanded .player-info {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    gap: 5px !important;
+  }
+
+  #miniPlayer.player-expanded .player-progress-wrap,
+  #miniPlayer.player-expanded .player-main-controls {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 540px !important;
+  }
+
+  #miniPlayer.player-expanded .player-main-controls {
+    margin: 0 !important;
+  }
+
+  #miniPlayer.player-expanded .player-bottom-controls {
+    display: none !important;
+  }
+}
