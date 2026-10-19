@@ -1762,3 +1762,34 @@ body.player-open{overflow:hidden;touch-action:none}
   content: none !important;
   display: none !important;
 }
+/* ZG Memory: bottom-aligned moving progress bar */
+#miniPlayer:not(.player-expanded) {
+  padding-bottom: 12px !important;
+}
+
+#miniPlayer:not(.player-expanded)::after {
+  content: none !important;
+  display: none !important;
+}
+
+#miniPlayer:not(.player-expanded) .mini-player-compact {
+  padding-bottom: 7px !important;
+}
+
+#miniPlayer:not(.player-expanded) .mini-progress-track {
+  position: absolute !important;
+  left: 12px !important;
+  right: 12px !important;
+  bottom: 7px !important;
+  height: 4px !important;
+  border-radius: 99px !important;
+  background: rgba(150, 169, 235, .3) !important;
+  overflow: hidden !important;
+}
+
+#miniPlayer:not(.player-expanded) #miniProgressFill {
+  height: 100% !important;
+  border-radius: 99px !important;
+  background: linear-gradient(90deg, #00d9ff, #8b35ff, #ff38c9) !important;
+  box-shadow: 0 0 8px rgba(139, 53, 255, .6) !important;
+}
