@@ -8,11 +8,11 @@
   <title>ZG Memory | Music Player</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=20">
+  <link rel="stylesheet" href="./styles.css?v=23">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
-  <script src="./app.js?v=20" defer></script>
+  <script src="./app.js?v=23" defer></script>
   <style>
     .albums-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:14px;margin:14px 0 22px}
     .album-card{display:block;text-align:left;min-width:0;padding:10px;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--text);cursor:pointer}
@@ -151,6 +151,7 @@
   <div class="player-brand">ZG <span>Memory</span><small>A MUSIC MEMORIAL</small></div>
   <button id="playerFavorite" class="player-top-favorite" type="button" aria-label="Favorite song" title="Favorite">♥</button>
   <button id="playerMore" class="player-top-more" type="button" aria-label="More player options" title="More">⋮</button>
+  <button id="playerLyrics" class="player-top-lyrics" type="button" aria-label="Lyrics" title="Lyrics">♫</button>
   <img id="playerCover" src="./icon.svg" alt="Song cover" class="player-cover">
   <div class="player-info"><strong id="playerTitle">Song title</strong><span id="playerArtist">Artist name</span></div>
   <div class="player-progress-wrap"><input id="playerProgress" class="player-progress" type="range" min="0" max="1000" value="0" aria-label="Song progress"><div class="player-time-row"><span id="playerCurrentTime">0:00</span><span id="playerDuration">0:00</span></div></div>
@@ -163,7 +164,7 @@
     <button id="forward10" type="button" aria-label="Forward 10 seconds" title="Forward 10 seconds">10<small>↷</small></button>
     <button id="repeatSong" type="button" aria-label="Repeat" aria-pressed="false" title="Repeat">⟳</button>
   </div>
-  <div class="player-bottom-controls"><button id="playerLyrics" type="button">♫ <span>Lyrics</span></button><div class="player-volume">🔊 <input id="playerVolume" type="range" min="0" max="1" step="0.01" value="1" aria-label="Volume"></div></div>
+  <div class="player-bottom-controls" aria-hidden="true"></div>
   <div class="mini-player-compact">
     <img id="miniPlayerCover" src="./icon.svg" alt="" class="mini-player-cover"><div class="mini-player-info"><strong id="miniPlayerTitle">Song title</strong><span id="miniPlayerArtist">Artist name</span></div>
     <button id="miniPreviousSong" type="button" aria-label="Previous song">|◀</button><button id="miniPlayPause" class="mini-play-pause" type="button" aria-label="Play or pause">Ⅱ</button><button id="miniNextSong" type="button" aria-label="Next song">▶|</button><button id="expandPlayer" type="button" aria-label="Open full-screen player" title="Open full-screen player">☷</button><div class="mini-progress-track"><span id="miniProgressFill"></span></div>
