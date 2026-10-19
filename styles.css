@@ -1303,3 +1303,49 @@ body{background:radial-gradient(ellipse at 82% 7%,rgba(255,105,133,.24),transpar
 body.player-open{overflow:hidden;touch-action:none}
 @media(max-width:480px){.mini-player:not(.player-expanded){right:8px;left:8px;bottom:calc(72px + env(safe-area-inset-bottom,0px));gap:8px;padding:8px 10px 12px}.mini-player:not(.player-expanded) .player-cover{width:44px;height:44px;flex-basis:44px}.mini-player.player-expanded{padding:calc(67px + env(safe-area-inset-top,0px)) 16px calc(20px + env(safe-area-inset-bottom,0px));gap:clamp(12px,2.2vh,20px)}.mini-player.player-expanded .player-cover{width:min(74vw,310px);height:min(74vw,310px);max-height:34vh;border-radius:22px}.mini-player.player-expanded audio{height:40px}.mini-player.player-expanded .skip-controls{gap:8px}.mini-player.player-expanded .skip-controls button{min-height:40px;padding:9px 12px;font-size:12px}}
 @media(max-height:700px){.mini-player.player-expanded{justify-content:flex-start;gap:12px;padding-top:calc(62px + env(safe-area-inset-top,0px))}.mini-player.player-expanded .player-cover{width:min(58vw,260px);height:min(58vw,260px);max-height:29vh}}
+
+/* ZG MEMORY DEMO MATCH — mini player + full-screen player */
+#miniPlayer{font-family:Inter,system-ui,-apple-system,sans-serif;color:#f7f8ff}
+#miniPlayer .player-brand,#miniPlayer .player-top-button,#miniPlayer .player-top-favorite,#miniPlayer .player-top-more,#miniPlayer .player-progress-wrap,#miniPlayer .player-main-controls,#miniPlayer .player-bottom-controls{display:none}
+#miniPlayer:not(.player-expanded){display:flex;align-items:center;gap:10px;min-height:76px;padding:10px 12px 16px;cursor:pointer}
+#miniPlayer:not(.player-expanded) .player-info{display:none}
+#miniPlayer:not(.player-expanded) .mini-player-compact{display:flex}
+#miniPlayer .mini-player-compact{display:none}
+#miniPlayer .mini-player-cover{width:54px;height:54px;object-fit:cover;border-radius:12px;border:1px solid rgba(130,190,255,.5);flex:0 0 auto}
+#miniPlayer .mini-player-info{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+#miniPlayer .mini-player-info strong{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff}
+#miniPlayer .mini-player-info span{font-size:12px;color:#b9c8f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#miniPlayer .mini-player-compact button{width:39px;height:39px;flex:0 0 auto;border:1px solid rgba(147,165,255,.45);border-radius:50%;color:#f5f6ff;background:rgba(13,23,50,.8);font-size:15px;display:grid;place-items:center}
+#miniPlayer .mini-player-compact .mini-play-pause{width:48px;height:48px;background:linear-gradient(135deg,#11caff,#8d38ff);box-shadow:0 0 18px #6849ff;font-size:18px}
+#miniPlayer .mini-progress-track{position:absolute;bottom:5px;left:13px;right:13px;height:4px;border-radius:99px;background:rgba(150,169,235,.3);overflow:hidden}
+#miniPlayer #miniProgressFill{display:block;width:0;height:100%;border-radius:99px;background:linear-gradient(90deg,#00d9ff,#8b35ff,#ff38c9);box-shadow:0 0 10px #d633ff}
+#miniPlayer #audio{display:none}
+#miniPlayer.player-expanded{position:fixed;inset:0;z-index:99999;width:100%;height:100dvh;max-width:none;margin:0;padding:calc(70px + env(safe-area-inset-top,0px)) 20px calc(24px + env(safe-area-inset-bottom,0px));box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:clamp(12px,2vh,22px);overflow:auto;border:1px solid rgba(68,211,255,.8);border-radius:0;background:radial-gradient(ellipse at 50% 26%,rgba(92,46,195,.25),transparent 40%),radial-gradient(ellipse at 10% 45%,rgba(0,169,255,.2),transparent 38%),radial-gradient(ellipse at 90% 60%,rgba(255,0,190,.17),transparent 38%),linear-gradient(160deg,#03091b,#090d27 55%,#160822);box-shadow:inset 0 0 60px rgba(69,57,255,.1)}
+#miniPlayer.player-expanded .player-brand{display:block;position:absolute;top:calc(13px + env(safe-area-inset-top,0px));left:76px;right:76px;text-align:center;font-size:clamp(21px,5.8vw,30px);font-weight:800;letter-spacing:-.7px;background:linear-gradient(90deg,#fff,#38d9ff,#a9a0ff);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.05}
+#miniPlayer.player-expanded .player-brand span{color:#26d8ff}
+#miniPlayer.player-expanded .player-brand small{display:block;margin-top:5px;font-size:10px;letter-spacing:3px;color:#c4d5ff}
+#miniPlayer.player-expanded .player-top-button,#miniPlayer.player-expanded .player-top-favorite,#miniPlayer.player-expanded .player-top-more{position:absolute;top:calc(16px + env(safe-area-inset-top,0px));z-index:3;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:#fff;background:rgba(255,255,255,.06);border:1px solid rgba(145,168,255,.5);font-size:24px}
+#miniPlayer.player-expanded .player-top-button{left:16px}
+#miniPlayer.player-expanded .player-top-favorite{right:66px;color:#ff57d3}
+#miniPlayer.player-expanded .player-top-more{right:14px}
+#miniPlayer.player-expanded .player-cover{display:block;width:min(78vw,380px);height:min(78vw,380px);max-height:40vh;flex:0 1 auto;object-fit:cover;border-radius:24px;border:1px solid rgba(255,69,215,.8);box-shadow:0 0 30px rgba(172,45,255,.45),0 0 18px rgba(0,195,255,.2)}
+#miniPlayer.player-expanded .player-info{display:flex;width:100%;max-width:560px;flex:0 0 auto;align-items:center;flex-direction:column;gap:6px;text-align:center}
+#miniPlayer.player-expanded .player-info strong{font-size:clamp(25px,6vw,36px);color:#fff;line-height:1.15}
+#miniPlayer.player-expanded .player-info span{font-size:clamp(14px,3.7vw,18px);color:#bfcaff}
+#miniPlayer.player-expanded .player-progress-wrap{display:block;width:100%;max-width:560px;flex:0 0 auto}
+#miniPlayer .player-progress{width:100%;height:7px;appearance:none;border-radius:99px;background:linear-gradient(90deg,#05d8ff,#b72bff,#423c9e);outline:none}
+#miniPlayer .player-progress::-webkit-slider-thumb{appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 0 12px #ff4ae4}
+#miniPlayer .player-progress::-moz-range-thumb{width:18px;height:18px;border:0;border-radius:50%;background:#fff;box-shadow:0 0 12px #ff4ae4}
+#miniPlayer .player-time-row{display:flex;justify-content:space-between;margin-top:7px;font-size:12px;color:#d6ddff}
+#miniPlayer.player-expanded .player-main-controls{display:flex;width:100%;max-width:560px;align-items:center;justify-content:space-between;gap:7px;flex:0 0 auto}
+#miniPlayer.player-expanded .player-main-controls button{width:clamp(38px,10vw,54px);height:clamp(38px,10vw,54px);padding:0;display:grid;place-items:center;position:relative;border-radius:50%;border:1px solid rgba(169,117,255,.65);background:rgba(8,18,47,.8);color:#f5f5ff;font-size:clamp(13px,3.8vw,19px)}
+#miniPlayer.player-expanded .player-main-controls button small{font-size:9px;margin-top:-9px}
+#miniPlayer.player-expanded .player-main-controls .player-play-pause{width:clamp(70px,19vw,96px);height:clamp(70px,19vw,96px);font-size:30px;background:linear-gradient(135deg,#00d6ff,#7d36ff 70%,#ed2bc8);box-shadow:0 0 25px rgba(81,78,255,.8);border:1px solid rgba(115,219,255,.8)}
+#miniPlayer.player-expanded .player-main-controls button.is-active{color:#ff67d6;border-color:#ff55d7;box-shadow:0 0 15px rgba(255,58,210,.3)}
+#miniPlayer.player-expanded .player-bottom-controls{display:flex;width:100%;max-width:500px;justify-content:space-between;align-items:center;gap:12px;flex:0 0 auto}
+#miniPlayer.player-expanded .player-bottom-controls button,#miniPlayer.player-expanded .player-volume{height:48px;padding:0 16px;border-radius:28px;border:1px solid rgba(86,153,255,.5);background:rgba(11,23,54,.8);color:#f4f7ff;display:flex;align-items:center;justify-content:center;gap:8px}
+#miniPlayer.player-expanded .player-volume{flex:1;min-width:0;max-width:240px}
+#miniPlayer.player-expanded .player-volume input{width:100%;accent-color:#e74bff}
+#miniPlayer.player-expanded .mini-player-compact{display:none!important}
+#miniPlayer.player-expanded #audio{display:none}
+@media(max-height:700px){#miniPlayer.player-expanded{justify-content:flex-start;gap:12px;padding-top:calc(66px + env(safe-area-inset-top,0px))}#miniPlayer.player-expanded .player-cover{width:min(55vw,250px);height:min(55vw,250px);max-height:27vh}#miniPlayer.player-expanded .player-main-controls button{width:38px;height:38px}#miniPlayer.player-expanded .player-main-controls .player-play-pause{width:65px;height:65px}#miniPlayer.player-expanded .player-bottom-controls button,#miniPlayer.player-expanded .player-volume{height:40px}}
