@@ -1773,8 +1773,10 @@ body.player-open{overflow:hidden;touch-action:none}
 }
 
 #miniPlayer:not(.player-expanded) .mini-player-compact {
+  position: static !important;
   padding-bottom: 7px !important;
 }
+
 
 #miniPlayer:not(.player-expanded) .mini-progress-track {
   position: absolute !important;
