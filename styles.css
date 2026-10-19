@@ -1804,3 +1804,11 @@ body.player-open{overflow:hidden;touch-action:none}
   max-height: 38vh !important;
   background: #080d20 !important;
 }
+
+#miniPlayer.player-expanded #minimizePlayer {
+  position: absolute !important;
+  top: 24px !important;
+  right: 82px !important;
+  left: auto !important;
+  z-index: 30 !important;
+}
