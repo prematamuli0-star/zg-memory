@@ -432,6 +432,11 @@ $("miniPlayer")?.addEventListener("click", event => {
 });
 $("minimizePlayer")?.addEventListener("click", event => { event.stopPropagation(); minimizePlayer(); });
 $("expandPlayer")?.addEventListener("click", event => { event.stopPropagation(); expandPlayer(); });
+$("hideMiniPlayer")?.addEventListener("click", event => {
+  event.stopPropagation();
+  minimizePlayer();
+  $("miniPlayer")?.classList.add("hidden");
+});
 $("playerPlayPause")?.addEventListener("click", event => { event.stopPropagation(); togglePlayback(); });
 $("miniPlayPause")?.addEventListener("click", event => { event.stopPropagation(); togglePlayback(); });
 $("miniNextSong")?.addEventListener("click", event => { event.stopPropagation(); playNextSong(); });
