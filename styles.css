@@ -1835,3 +1835,32 @@ body.player-open{overflow:hidden;touch-action:none}
 #miniPlayer.player-expanded > button.player-top-button:not(#minimizePlayer) {
   display: none !important;
 }
+/* ZG Memory: align fullscreen top buttons */
+#miniPlayer.player-expanded #playerFavorite,
+#miniPlayer.player-expanded #minimizePlayer {
+  position: absolute !important;
+  top: 24px !important;
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+  min-height: 54px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transform: none !important;
+  z-index: 50 !important;
+}
+
+#miniPlayer.player-expanded #playerFavorite {
+  right: 76px !important;
+  left: auto !important;
+}
+
+#miniPlayer.player-expanded #minimizePlayer {
+  right: 12px !important;
+  left: auto !important;
+}
