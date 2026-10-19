@@ -1736,3 +1736,24 @@ body.player-open{overflow:hidden;touch-action:none}
 #miniPlayer:not(.player-expanded) #playerProgress {
   display: none !important;
 }
+
+/* ZG Memory: keep only the moving compact progress bar */
+#miniPlayer:not(.player-expanded) .player-progress-wrap,
+#miniPlayer:not(.player-expanded) #playerProgress {
+  display: none !important;
+}
+
+#miniPlayer:not(.player-expanded) .mini-progress-track {
+  display: block !important;
+  position: absolute !important;
+  left: 9px !important;
+  right: 9px !important;
+  bottom: 4px !important;
+  height: 4px !important;
+  overflow: hidden !important;
+}
+
+#miniPlayer:not(.player-expanded) .mini-progress-track span {
+  display: block !important;
+  height: 100% !important;
+}
