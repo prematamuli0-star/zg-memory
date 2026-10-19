@@ -1795,3 +1795,12 @@ body.player-open{overflow:hidden;touch-action:none}
   background: linear-gradient(90deg, #00d9ff, #8b35ff, #ff38c9) !important;
   box-shadow: 0 0 8px rgba(139, 53, 255, .6) !important;
 }
+/* ZG Memory: show the full album cover */
+#miniPlayer.player-expanded .player-cover {
+  object-fit: contain !important;
+  width: min(78vw, 360px) !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1;
+  max-height: 38vh !important;
+  background: #080d20 !important;
+}
