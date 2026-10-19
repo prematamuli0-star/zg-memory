@@ -1366,7 +1366,7 @@ body.player-open{overflow:hidden;touch-action:none}
 #miniPlayer.player-expanded .player-brand span{color:#26d8ff!important;-webkit-text-fill-color:#26d8ff!important}
 #miniPlayer.player-expanded .player-brand small{display:block!important;margin-top:4px!important;font-size:9px!important;letter-spacing:2px!important;color:#c4d5ff!important;-webkit-text-fill-color:#c4d5ff!important}
 #miniPlayer.player-expanded .player-top-button,#miniPlayer.player-expanded .player-top-favorite,#miniPlayer.player-expanded .player-top-more{display:grid!important;position:absolute!important;top:calc(14px + env(safe-area-inset-top,0px))!important;z-index:5!important;width:42px!important;height:42px!important;padding:0!important;place-items:center!important;border-radius:50%!important;color:#fff!important;background:rgba(255,255,255,.07)!important;border:1px solid rgba(145,168,255,.55)!important}
-#miniPlayer.player-expanded .player-top-button{left:14px!important;font-size:0!important}
+#miniPlayer.player-expanded .player-top-button{left:auto!important;font-size:0!important}
 
 #miniPlayer.player-expanded .player-top-button::before {
   content: none !important;
