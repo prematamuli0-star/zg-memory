@@ -1731,3 +1731,8 @@ body.player-open{overflow:hidden;touch-action:none}
     padding-bottom: 100px !important;
   }
 }
+/* ZG Memory — remove duplicate mini-player progress bar */
+#miniPlayer:not(.player-expanded) .player-progress-wrap,
+#miniPlayer:not(.player-expanded) #playerProgress {
+  display: none !important;
+}
