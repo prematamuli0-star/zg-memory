@@ -1757,3 +1757,8 @@ body.player-open{overflow:hidden;touch-action:none}
   display: block !important;
   height: 100% !important;
 }
+/* FINAL FIX: remove the extra static progress line */
+#miniPlayer:not(.player-expanded)::after {
+  content: none !important;
+  display: none !important;
+}
