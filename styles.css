@@ -1813,7 +1813,7 @@ body.player-open{overflow:hidden;touch-action:none}
 #miniPlayer.player-expanded #minimizePlayer {
   position: absolute !important;
   top: 24px !important;
-  right: 82px !important;
+  right: 12px !important;
   left: auto !important;
   z-index: 30 !important;
 }
@@ -1822,7 +1822,7 @@ body.player-open{overflow:hidden;touch-action:none}
 #miniPlayer.player-expanded #minimizePlayer {
   position: absolute !important;
   top: 24px !important;
-  right: 82px !important;
+  right: 12px !important;
   left: auto !important;
   width: 44px !important;
   height: 44px !important;
