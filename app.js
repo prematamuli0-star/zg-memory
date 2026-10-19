@@ -432,16 +432,16 @@ $("miniPlayer")?.addEventListener("click", event => {
 });
 $("minimizePlayer")?.addEventListener("click", event => { event.stopPropagation(); minimizePlayer(); });
 
-$("#hideMiniPlayer")?.addEventListener("click", event => {
+$("hideMiniPlayer")?.addEventListener("click", event => {
   event.stopPropagation();
 
-  const audio = $("#audio");
+  const audio = $("audio");
   if (audio) {
     audio.pause();
     audio.currentTime = 0;
   }
 
-  $("#miniPlayer")?.classList.add("hidden");
+  $("miniPlayer")?.classList.add("hidden");
   minimizePlayer();
 });
 
