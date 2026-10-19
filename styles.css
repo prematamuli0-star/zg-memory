@@ -1531,3 +1531,65 @@ body.player-open{overflow:hidden;touch-action:none}
 @media (max-width: 380px) {
   #miniPlayer.player-expanded .player-top-lyrics { right: 164px !important; width: 42px !important; height: 42px !important; }
 }
+
+
+/* ZG MEMORY FINAL v24 — fixes based on the uploaded live files */
+#miniPlayer.player-expanded .player-top-lyrics {
+  display: flex !important;
+  position: absolute !important;
+  left: auto !important;
+  right: 116px !important;
+  top: calc(14px + env(safe-area-inset-top, 0px)) !important;
+  transform: none !important;
+  z-index: 30 !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid rgba(145,168,255,.55) !important;
+  border-radius: 50% !important;
+  background: rgba(255,255,255,.07) !important;
+  color: #fff !important;
+  font-size: 22px !important;
+  line-height: 1 !important;
+}
+#miniPlayer.player-expanded .player-brand {
+  left: 74px !important;
+  right: 74px !important;
+  max-width: calc(100% - 148px) !important;
+  pointer-events: none !important;
+}
+#miniPlayer.player-expanded .player-bottom-controls,
+#miniPlayer.player-expanded .player-volume,
+#miniPlayer.player-expanded .player-volume input {
+  display: none !important;
+}
+#miniPlayer:not(.player-expanded) .player-top-lyrics { display: none !important; }
+#miniPlayer:not(.player-expanded) {
+  position: fixed !important;
+  top: auto !important;
+  left: 12px !important;
+  right: 12px !important;
+  bottom: calc(82px + env(safe-area-inset-bottom, 0px)) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  transform: none !important;
+  animation: none !important;
+  z-index: 9998 !important;
+}
+#miniPlayer:not(.player-expanded) .mini-player-compact { transform: none !important; }
+#songList, .song-list {
+  padding-bottom: calc(220px + env(safe-area-inset-bottom, 0px)) !important;
+  scroll-padding-bottom: calc(220px + env(safe-area-inset-bottom, 0px)) !important;
+}
+@media (max-width: 480px) {
+  #miniPlayer.player-expanded .player-top-lyrics {
+    right: 108px !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+  }
+}
