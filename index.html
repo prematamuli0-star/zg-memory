@@ -150,7 +150,14 @@
   
   <div class="player-brand">ZG <span>Memory</span><small>A MUSIC MEMORIAL</small></div>
   <button id="playerFavorite" class="player-top-favorite" type="button" aria-label="Favorite song" title="Favorite">♥</button>
-  <button id="playerMore" class="player-top-more" type="button" aria-label="More player options" title="More">⋮</button>
+  
+<button id="minimizePlayer" class="player-top-button" type="button" aria-label="Minimize player" title="Minimize player">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <rect x="2" y="2" width="20" height="20" rx="5" stroke="white" stroke-width="2"/>
+    <path d="M7 12H17" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+</button>
+
   <button id="playerLyrics" class="player-top-lyrics" type="button" aria-label="Lyrics" title="Lyrics">♫</button>
   <img id="playerCover" src="./icon.svg" alt="Song cover" class="player-cover">
   <div class="player-info"><strong id="playerTitle">Song title</strong><span id="playerArtist">Artist name</span></div>
