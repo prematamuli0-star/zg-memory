@@ -1401,3 +1401,133 @@ body.player-open{overflow:hidden;touch-action:none}
 #miniPlayer:not(.player-expanded) > .mini-player-compact { display: flex !important; }
 #miniPlayer:not(.player-expanded) .mini-player-compact > img#miniPlayerCover { display: block !important; visibility: visible !important; opacity: 1 !important; }
 #miniPlayer:not(.player-expanded) .mini-player-compact > img:not(#miniPlayerCover) { display: none !important; }
+
+
+/* v21 FIX: keep the compact player pinned to the viewport during list scrolling */
+#miniPlayer:not(.player-expanded) {
+  position: fixed !important;
+  left: 12px !important;
+  right: 12px !important;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+  top: auto !important;
+  width: auto !important;
+  max-width: 700px !important;
+  margin: 0 auto !important;
+  transform: none !important;
+  animation: none !important;
+  z-index: 9998 !important;
+  box-sizing: border-box !important;
+}
+#miniPlayer:not(.player-expanded) .mini-player-compact {
+  position: relative !important;
+  transform: none !important;
+  flex-shrink: 0 !important;
+}
+/* Reserve space so the final songs are not hidden behind the fixed mini-player. */
+.song-list {
+  padding-bottom: calc(190px + env(safe-area-inset-bottom, 0px)) !important;
+  scroll-margin-bottom: 190px;
+}
+/* Stable fullscreen layout: evenly spaced controls, with safe-area aware sizing. */
+#miniPlayer.player-expanded {
+  justify-content: flex-start !important;
+  gap: clamp(10px, 1.7vh, 18px) !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+}
+#miniPlayer.player-expanded .player-cover {
+  margin-top: clamp(4px, 1vh, 12px) !important;
+  flex-shrink: 1 !important;
+}
+#miniPlayer.player-expanded .player-info,
+#miniPlayer.player-expanded .player-progress-wrap,
+#miniPlayer.player-expanded .player-main-controls,
+#miniPlayer.player-expanded .player-bottom-controls {
+  flex-shrink: 0 !important;
+}
+#miniPlayer.player-expanded .player-main-controls {
+  margin-top: clamp(2px, 1vh, 10px) !important;
+  margin-bottom: clamp(2px, 1vh, 10px) !important;
+}
+@media (min-height: 761px) {
+  #miniPlayer.player-expanded {
+    justify-content: space-evenly !important;
+  }
+}
+
+
+/* v22: Lyrics moved to the upper-right; remove the fullscreen volume bar. */
+#miniPlayer.player-expanded .player-top-lyrics {
+  display: flex !important; position: absolute !important;
+  top: calc(24px + env(safe-area-inset-top, 0px)) !important;
+  right: 124px !important; z-index: 20 !important;
+  width: 48px !important; height: 48px !important;
+  align-items: center !important; justify-content: center !important;
+  padding: 0 !important; border-radius: 50% !important;
+  border: 1px solid rgba(120,150,220,.55) !important;
+  background: rgba(255,255,255,.08) !important; color: #fff !important;
+  font-size: 24px !important; line-height: 1 !important;
+}
+#miniPlayer.player-expanded .player-bottom-controls {
+  display: none !important;
+}
+#miniPlayer:not(.player-expanded) .player-top-lyrics { display: none !important; }
+@media (max-width: 380px) {
+  #miniPlayer.player-expanded .player-top-lyrics { right: 112px !important; width: 42px !important; height: 42px !important; }
+}
+
+
+/* ZG Memory FINAL v23 — consolidated mobile player fixes */
+@media (max-width: 767px) {
+  /* Compact mini-player remains fixed to the viewport while songs scroll. */
+  body { padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); }
+  #miniPlayer:not(.player-expanded) {
+    position: fixed !important;
+    left: 12px !important; right: 12px !important;
+    top: auto !important;
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+    width: auto !important; max-width: 700px !important;
+    margin-left: auto !important; margin-right: auto !important;
+    transform: none !important; animation: none !important;
+    z-index: 9998 !important; box-sizing: border-box !important;
+  }
+  #miniPlayer:not(.player-expanded) .mini-player-compact {
+    position: relative !important; transform: none !important; flex-shrink: 0 !important;
+  }
+  /* Reserve space after the last song so it can scroll above the mini-player. */
+  .song-list, #songList, .songs-list {
+    padding-bottom: calc(200px + env(safe-area-inset-bottom, 0px)) !important;
+    scroll-padding-bottom: calc(200px + env(safe-area-inset-bottom, 0px));
+  }
+}
+/* Fullscreen player uses the available viewport and keeps its controls together. */
+#miniPlayer.player-expanded {
+  box-sizing: border-box !important;
+  padding-top: calc(70px + env(safe-area-inset-top, 0px)) !important;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
+  overflow-y: auto !important; overscroll-behavior: contain !important;
+}
+#miniPlayer.player-expanded .player-cover {
+  margin-top: 4px !important; flex-shrink: 1 !important;
+}
+#miniPlayer.player-expanded .player-info,
+#miniPlayer.player-expanded .player-progress-wrap,
+#miniPlayer.player-expanded .player-main-controls { flex-shrink: 0 !important; }
+#miniPlayer.player-expanded .player-main-controls {
+  margin-top: clamp(4px, 1vh, 10px) !important;
+  margin-bottom: clamp(4px, 1vh, 10px) !important;
+}
+/* Lyrics sits in the top-right controls row, to the left of the heart/more buttons. */
+#miniPlayer.player-expanded .player-top-lyrics {
+  display: flex !important; position: absolute !important;
+  top: calc(24px + env(safe-area-inset-top, 0px)) !important;
+  right: 176px !important; z-index: 25 !important;
+  width: 48px !important; height: 48px !important;
+  align-items: center !important; justify-content: center !important;
+  border-radius: 50% !important; cursor: pointer !important;
+}
+#miniPlayer.player-expanded .player-bottom-controls { display: none !important; }
+#miniPlayer:not(.player-expanded) .player-top-lyrics { display: none !important; }
+@media (max-width: 380px) {
+  #miniPlayer.player-expanded .player-top-lyrics { right: 164px !important; width: 42px !important; height: 42px !important; }
+}
