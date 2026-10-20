@@ -1571,13 +1571,13 @@ body.player-open{overflow:hidden;touch-action:none}
 #miniPlayer.player-expanded .player-top-lyrics {
   display: flex !important;
   position: absolute !important;
-  top: calc(14px + env(safe-area-inset-top, 0px)) !important;
-  right: 112px !important;
+  top: calc(18px + env(safe-area-inset-top, 0px)) !important;
+  right: 164px !important;
   left: auto !important;
   bottom: auto !important;
   z-index: 30 !important;
-  width: 42px !important;
-  height: 42px !important;
+  width: 36px !important;
+  height: 36px !important;
   margin: 0 !important;
   padding: 0 !important;
   transform: none !important;
