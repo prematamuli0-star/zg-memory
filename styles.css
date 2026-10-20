@@ -2136,3 +2136,25 @@ body.player-open{overflow:hidden;touch-action:none}
 #miniPlayer.player-expanded #playerFavorite {
   z-index: 3 !important;
 }
+
+/* Lyrics and Favorite row */
+#miniPlayer.player-expanded .player-progress-tools {
+  display: flex !important;
+  width: 100% !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  flex: 0 0 58px !important;
+  margin: 0 0 18px !important;
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+/* Keep the progress bar below its buttons */
+#miniPlayer.player-expanded .player-progress-wrap {
+  display: block !important;
+  width: 100% !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
