@@ -282,6 +282,7 @@ async function playSong(id) {
   }
 
   currentSongId = song.id;
+  updatePlayerFavoriteState();
   $("playerCover").src = coverOf(song);
   $("playerTitle").textContent = song.title;
   $("playerArtist").textContent = metaOf(song);
@@ -1139,3 +1140,14 @@ if ("serviceWorker" in navigator &&
 
 /* Start app */
 init();
+
+function updatePlayerFavoriteState() {
+  const button = document.getElementById("playerFavorite");
+  if (!button || currentSongId == null) return;
+
+  const isFavorite = favorites.includes(String(currentSongId));
+
+  button.classList.toggle("favorited", isFavorite);
+  button.setAttribute("aria-pressed", String(isFavorite));
+  button.textContent = isFavorite ? "♥" : "♡";
+}
