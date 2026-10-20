@@ -1877,12 +1877,13 @@ body.player-open{overflow:hidden;touch-action:none}
   z-index: 51 !important;
 }
 
-/* ZG MEMORY FINAL LYRICS BUTTON FIX */
+
+/* ZG Memory: Lyrics and Favorite above timing bar */
 #miniPlayer.player-expanded #playerLyrics {
   position: absolute !important;
-  top: 24px !important;
-  right: 124px !important;
-  left: auto !important;
+  top: 68% !important;
+  left: 16px !important;
+  right: auto !important;
   bottom: auto !important;
   width: 36px !important;
   height: 36px !important;
@@ -1890,11 +1891,23 @@ body.player-open{overflow:hidden;touch-action:none}
   min-height: 36px !important;
   margin: 0 !important;
   padding: 0 !important;
-  border-radius: 50% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  border-radius: 50% !important;
   z-index: 60 !important;
   font-size: 18px !important;
-  line-height: 1 !important;
 }
+
+#miniPlayer.player-expanded #playerFavorite {
+  position: absolute !important;
+  top: 68% !important;
+  left: auto !important;
+  right: 16px !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  z-index: 60 !important;
+}
+
