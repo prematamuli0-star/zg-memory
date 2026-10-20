@@ -1864,3 +1864,15 @@ body.player-open{overflow:hidden;touch-action:none}
   right: 12px !important;
   left: auto !important;
 }
+/* ZG Memory: small Lyrics button */
+#miniPlayer.player-expanded #playerLyrics {
+  position: absolute !important;
+  top: 24px !important;
+  right: 140px !important;
+  left: auto !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  z-index: 51 !important;
+}
