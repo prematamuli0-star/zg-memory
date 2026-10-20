@@ -2062,9 +2062,9 @@ body.player-open{overflow:hidden;touch-action:none}
 #miniPlayer.player-expanded .player-main-controls button {
   display: grid !important;
   place-items: center !important;
-  flex: 0 1 44px !important;
-  width: 44px !important;
-  height: 44px !important;
+  flex: 0 1 50px !important;
+  width: 50px !important;
+  height: 50px !important;
   min-width: 0 !important;
   padding: 0 !important;
   box-sizing: border-box !important;
