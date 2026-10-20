@@ -456,7 +456,10 @@ $("playerFavorite")?.addEventListener("click", event => {
   event.stopPropagation(); if (currentSongId == null) return;
   const key = String(currentSongId);
   favorites = favorites.includes(key) ? favorites.filter(id => id !== key) : [...favorites, key];
-  saveFavorites(); render(); toast(favorites.includes(key) ? "Added to favorites" : "Removed from favorites");
+  saveFavorites();
+updatePlayerFavoriteState();
+render();
+toast(favorites.includes(key) ? "Added to favorites" : "Removed from favorites");
 });
 $("playerLyrics")?.addEventListener("click", event => { event.stopPropagation(); toast("Lyrics are not available for this song yet."); });
 $("playerMore")?.addEventListener("click", event => { event.stopPropagation(); toast("ZG Memory player options"); });
