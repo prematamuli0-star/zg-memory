@@ -2124,3 +2124,9 @@ body.player-open{overflow:hidden;touch-action:none}
     gap: 4px !important;
   }
 }
+/* Move progress bar below Lyrics and Favorite buttons */
+#miniPlayer.player-expanded .player-progress-row {
+  margin-top: 24px !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
