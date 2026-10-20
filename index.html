@@ -156,29 +156,52 @@
   </svg>
 </button>
 
-  <img id="playerCover" src="./icon.svg" alt="Song cover" class="player-cover">
-  <div class="player-info"><strong id="playerTitle">Song title</strong><span id="playerArtist">Artist name</span></div>
+  
+<img id="playerCover" src="./icon.svg" alt="Song cover" class="player-cover">
+
+<div class="player-info">
+  <strong id="playerTitle">Song title</strong>
+  <span id="playerArtist">Artist name</span>
+</div>
+
+<div class="player-progress-tools" aria-label="Lyrics and favorite controls">
   <button id="playerLyrics"
-        class="player-top-lyrics"
-        type="button"
-        aria-label="Lyrics"
-        title="Lyrics">
-  <svg xmlns="http://www.w3.org/2000/svg"
-       viewBox="0 0 24 24"
-       width="30" height="30"
-       fill="none"
-       stroke="currentColor"
-       stroke-width="1.8"
-       stroke-linecap="round"
-       stroke-linejoin="round"
-       aria-hidden="true">
-    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-    <path d="M14 2v6h6"/>
-    <path d="M8 13h8M8 17h8"/>
-  </svg>
-</button>
-    <button id="playerFavorite" class="player-top-favorite" type="button" aria-label="Favorite song" title="Favorite">♥</button>
+          class="player-top-lyrics"
+          type="button"
+          aria-label="Lyrics"
+          title="Lyrics">
+    <svg xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 24 24"
+         width="30" height="30"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="1.8"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         aria-hidden="true">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <path d="M14 2v6h6"/>
+      <path d="M8 13h8M8 17h8"/>
+    </svg>
+  </button>
+
+  <button id="playerFavorite"
+          class="player-top-favorite"
+          type="button"
+          aria-label="Favorite song"
+          title="Favorite">♥</button>
+</div>
+
+<div class="player-progress-wrap">
+  <input id="playerProgress" class="player-progress"
+         type="range" min="0" max="1000" value="0"
+         aria-label="Song progress">
+  <div class="player-time-row">
+    <span id="playerCurrentTime">0:00</span>
+    <span id="playerDuration">0:00</span>
   </div>
+</div>
+
   <div class="player-progress-wrap"><input id="playerProgress" class="player-progress" type="range" min="0" max="1000" value="0" aria-label="Song progress"><div class="player-time-row"><span id="playerCurrentTime">0:00</span><span id="playerDuration">0:00</span></div></div>
   <div class="player-main-controls">
     <button id="shuffleSong" type="button" aria-label="Shuffle" aria-pressed="false" title="Shuffle">⤨</button>
