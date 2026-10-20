@@ -1881,7 +1881,7 @@ body.player-open{overflow:hidden;touch-action:none}
 #miniPlayer.player-expanded #playerLyrics {
   position: absolute !important;
   top: 24px !important;
-  right: 140px !important;
+  right: 124px !important;
   left: auto !important;
   bottom: auto !important;
   width: 36px !important;
