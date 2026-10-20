@@ -1876,3 +1876,25 @@ body.player-open{overflow:hidden;touch-action:none}
   min-height: 36px !important;
   z-index: 51 !important;
 }
+
+/* ZG MEMORY FINAL LYRICS BUTTON FIX */
+#miniPlayer.player-expanded #playerLyrics {
+  position: absolute !important;
+  top: 24px !important;
+  right: 140px !important;
+  left: auto !important;
+  bottom: auto !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 60 !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+}
