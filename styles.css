@@ -2158,3 +2158,13 @@ body.player-open{overflow:hidden;touch-action:none}
   position: relative !important;
   z-index: 1 !important;
 }
+
+/* ZG Memory fullscreen favorite button */
+#miniPlayer.player-expanded #playerFavorite {
+  color: #ffffff !important;
+  transition: color 0.2s ease;
+}
+
+#miniPlayer.player-expanded #playerFavorite.favorited {
+  color: #ff4fc8 !important;
+}
