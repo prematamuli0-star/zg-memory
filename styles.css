@@ -2124,16 +2124,15 @@ body.player-open{overflow:hidden;touch-action:none}
     gap: 4px !important;
   }
 }
-/* Move progress bar below Lyrics and Favorite buttons */
-
-/* ZG Memory — final fullscreen progress spacing fix */
-#miniPlayer.player-expanded .player-progress-tools {
-  margin-bottom: 24px !important;
-}
-
+/* ZG Memory — move progress bar below the Lyrics/Favorite row */
 #miniPlayer.player-expanded .player-progress-wrap {
+  margin-top: 34px !important;
   position: relative !important;
-  margin-top: 0 !important;
-  z-index: 1 !important;
+  width: 100% !important;
+  flex-shrink: 0 !important;
 }
 
+#miniPlayer.player-expanded #playerLyrics,
+#miniPlayer.player-expanded #playerFavorite {
+  z-index: 3 !important;
+}
