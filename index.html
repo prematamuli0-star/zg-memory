@@ -67,7 +67,8 @@
         <input id="searchInput" type="search" placeholder="Search songs, artists, albums, year..." aria-label="Search songs, artists, albums, year">
         <button id="clearSearch" class="button secondary" type="button">Clear</button>
       </div>
-      <div class="music-tabs">
+      <div class="music-tabs" aria-label="Music navigation">
+        <button class="tab-button search-tab-button" type="button" id="searchTabBtn" aria-label="Focus search">⌕ Search</button>
         <button class="tab-button active" type="button" data-view="home" id="allSongsBtn">All Songs</button>
         <button class="tab-button" type="button" data-view="albums" id="albumsBtn">Albums</button>
         <button class="tab-button" type="button" data-view="library">Library</button>
