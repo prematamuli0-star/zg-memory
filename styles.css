@@ -2214,3 +2214,9 @@ body.player-open{overflow:hidden;touch-action:none}
   -webkit-text-fill-color: #ffffff !important;
   opacity: 1 !important;
 }
+/* FINAL FIX: Remove fullscreen cover border and glow */
+#miniPlayer.player-expanded #playerCover {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
