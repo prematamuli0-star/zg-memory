@@ -2220,3 +2220,11 @@ body.player-open{overflow:hidden;touch-action:none}
   outline: 0 !important;
   box-shadow: none !important;
 }
+/* ZG Memory: Remove black side areas around album cover */
+#miniPlayer.player-expanded .player-cover {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  object-fit: contain !important;
+}
