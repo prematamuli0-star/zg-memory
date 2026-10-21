@@ -2255,3 +2255,56 @@ scrollbar-width: none !important;
 .filter-tabs::-webkit-scrollbar {
 display: none !important;
 }
+/* ZG MEMORY — MATCH STICKY TABS WITH HEADER THEME */
+
+.music-tabs,
+.filter-tabs {
+position: sticky !important;
+top: 110px !important;
+z-index: 90 !important;
+
+display: flex !important;
+flex-wrap: nowrap !important;
+gap: 10px !important;
+
+margin: 0 !important;
+padding: 12px 12px 14px !important;
+
+background: linear-gradient(
+110deg,
+rgba(10, 28, 57, 0.97),
+rgba(28, 24, 63, 0.97) 62%,
+rgba(69, 28, 73, 0.96)
+) !important;
+
+border: 0 !important;
+border-bottom: 1px solid rgba(137, 169, 255, 0.35) !important;
+border-radius: 0 0 16px 16px !important;
+
+box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18) !important;
+
+backdrop-filter: blur(22px) !important;
+-webkit-backdrop-filter: blur(22px) !important;
+
+overflow-x: auto !important;
+scrollbar-width: none !important;
+}
+
+.music-tabs::-webkit-scrollbar,
+.filter-tabs::-webkit-scrollbar {
+display: none !important;
+}
+
+.music-tabs .tab-button,
+.filter-tabs .tab {
+flex: 0 0 auto !important;
+}
+
+/* Active tab — matching ZG neon blue-purple theme */
+.music-tabs .tab-button.active,
+.filter-tabs .tab.active {
+color: #ffffff !important;
+background: linear-gradient(135deg, #785aff, #378eff) !important;
+border: 1px solid rgba(182, 190, 255, 0.7) !important;
+box-shadow: 0 6px 20px rgba(91, 99, 255, 0.25) !important;
+}
