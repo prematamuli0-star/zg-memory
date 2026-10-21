@@ -8,7 +8,7 @@
   <title>ZG Memory | Music Player</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=32">
+  <link rel="stylesheet" href="./styles.css?v=33">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
@@ -68,7 +68,7 @@
         <button id="clearSearch" class="button secondary" type="button">Clear</button>
       </div>
       <div class="music-tabs" aria-label="Music navigation">
-        <button class="tab-button search-tab-button" type="button" id="searchTabBtn" aria-label="Focus search">⌕ Search</button>
+        <button class="tab-button search-tab-button" type="button" id="searchTabBtn" aria-label="Focus search" onclick="document.getElementById('searchInput').focus(); document.getElementById('searchInput').scrollIntoView({behavior:'smooth',block:'center'});">⌕ Search</button>
         <button class="tab-button active" type="button" data-view="home" id="allSongsBtn">All Songs</button>
         <button class="tab-button" type="button" data-view="albums" id="albumsBtn">Albums</button>
         <button class="tab-button" type="button" data-view="library">Library</button>
