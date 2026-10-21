@@ -2228,3 +2228,30 @@ body.player-open{overflow:hidden;touch-action:none}
   box-shadow: none !important;
   object-fit: contain !important;
 }
+/* ZG Memory — Keep music tabs sticky while scrolling */
+
+.music-tabs,
+.filter-tabs {
+position: sticky !important;
+top: 72px !important;
+z-index: 90 !important;
+background: rgba(5, 11, 23, 0.96) !important;
+backdrop-filter: blur(16px) !important;
+-webkit-backdrop-filter: blur(16px) !important;
+padding-top: 10px !important;
+padding-bottom: 10px !important;
+}
+
+/* Keep tabs on one horizontal row */
+.music-tabs,
+.filter-tabs {
+display: flex !important;
+flex-wrap: nowrap !important;
+overflow-x: auto !important;
+scrollbar-width: none !important;
+}
+
+.music-tabs::-webkit-scrollbar,
+.filter-tabs::-webkit-scrollbar {
+display: none !important;
+}
