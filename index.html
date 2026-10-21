@@ -8,7 +8,7 @@
   <title>ZG Memory | Music Player</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=33">
+  <link rel="stylesheet" href="./styles.css?v=34">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
@@ -221,5 +221,19 @@
   <audio id="audio" preload="metadata">Your browser does not support audio playback.</audio>
 </section>
 
+  <script>
+    // Keep the sticky music navigation directly beneath the actual header height.
+    (() => {
+      const header = document.querySelector('.site-header');
+      if (!header) return;
+      const updateHeaderHeight = () => {
+        document.documentElement.style.setProperty('--zg-sticky-header-height', `${header.getBoundingClientRect().height}px`);
+      };
+      updateHeaderHeight();
+      if ('ResizeObserver' in window) new ResizeObserver(updateHeaderHeight).observe(header);
+      window.addEventListener('resize', updateHeaderHeight, { passive: true });
+      window.addEventListener('orientationchange', updateHeaderHeight, { passive: true });
+    })();
+  </script>
 </body>
 </html>
