@@ -2260,7 +2260,7 @@ display: none !important;
 .music-tabs,
 .filter-tabs {
 position: sticky !important;
-top: 110px !important;
+top: 164px !important;
 z-index: 90 !important;
 
 display: flex !important;
