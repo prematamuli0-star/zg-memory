@@ -2354,3 +2354,76 @@ box-shadow: 0 6px 20px rgba(91, 99, 255, 0.25) !important;
 .filter-tabs .tab {
   flex: 0 0 auto !important;
 }
+
+
+/* ZG MEMORY — EXACT NAV DEMO: matching glass panel + five equal tabs */
+.site-header,
+.topbar {
+  background: linear-gradient(
+    110deg,
+    rgba(5, 11, 23, 0.97),
+    rgba(10, 28, 57, 0.97) 55%,
+    rgba(28, 24, 63, 0.97)
+  ) !important;
+  border-bottom: 1px solid rgba(137, 169, 255, 0.30) !important;
+}
+
+.music-tabs,
+.filter-tabs {
+  top: 66px !important;
+  width: 100% !important;
+  gap: 8px !important;
+  padding: 10px 10px 12px !important;
+  background: linear-gradient(
+    110deg,
+    rgba(5, 11, 23, 0.97),
+    rgba(10, 28, 57, 0.97) 55%,
+    rgba(28, 24, 63, 0.97)
+  ) !important;
+  border-top: 1px solid rgba(137, 169, 255, 0.12) !important;
+  border-bottom: 1px solid rgba(137, 169, 255, 0.30) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18) !important;
+}
+
+.music-tabs .tab-button {
+  flex: 0 0 112px !important;
+  width: 112px !important;
+  min-width: 112px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  padding: 0 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+.music-tabs .search-tab-button {
+  color: #d4f5ff !important;
+  background: rgba(255,255,255,.07) !important;
+  border: 1px solid rgba(173,204,255,.24) !important;
+}
+
+.music-tabs .tab-button.active {
+  color: #fff !important;
+  background: linear-gradient(135deg, #785aff, #378eff) !important;
+  border: 1px solid rgba(182,190,255,.7) !important;
+  box-shadow: 0 6px 20px rgba(91,99,255,.25) !important;
+}
+
+@media (max-width: 600px) {
+  .music-tabs .tab-button {
+    flex-basis: 104px !important;
+    width: 104px !important;
+    min-width: 104px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    font-size: 11px !important;
+  }
+}
