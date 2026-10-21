@@ -2168,3 +2168,10 @@ body.player-open{overflow:hidden;touch-action:none}
 #miniPlayer.player-expanded #playerFavorite.favorited {
   color: #ff4fc8 !important;
 }
+#repeatSong.is-active,
+#shuffleSong.is-active {
+  color: #ff4fc8 !important;
+  border-color: #ff4fc8 !important;
+  background: rgba(255, 79, 200, 0.15) !important;
+  box-shadow: 0 0 14px rgba(255, 79, 200, 0.3);
+}
