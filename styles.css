@@ -2168,13 +2168,27 @@ body.player-open{overflow:hidden;touch-action:none}
 #miniPlayer.player-expanded #playerFavorite.favorited {
   color: #ff4fc8 !important;
 }
-#repeatSong.is-active,
-#shuffleSong.is-active {
-  color: #ff4fc8 !important;
-  border-color: #ff4fc8 !important;
-  background: rgba(255, 79, 200, 0.15) !important;
-  box-shadow: 0 0 14px rgba(255, 79, 200, 0.3);
+
+/* ZG Memory — clear active states for Shuffle and Repeat */
+#miniPlayer.player-expanded #shuffleSong,
+#miniPlayer.player-expanded #repeatSong {
+  color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,.35) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  transition: color .2s ease, background .2s ease, box-shadow .2s ease;
 }
+
+#miniPlayer.player-expanded #shuffleSong.is-active,
+#miniPlayer.player-expanded #repeatSong.is-active {
+  color: #ff4fc8 !important;
+  border: 1px solid #ff4fc8 !important;
+  background: rgba(255,79,200,.22) !important;
+  box-shadow: 0 0 18px rgba(255,79,200,.65) !important;
+  opacity: 1 !important;
+}
+
 
 /* Remove cover photo border and glow */
 #playerCover {
