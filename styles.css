@@ -2427,3 +2427,165 @@ box-shadow: 0 6px 20px rgba(91, 99, 255, 0.25) !important;
     font-size: 11px !important;
   }
 }
+
+
+/* ZG MEMORY — MOBILE STICKY NAV PATCH (supersedes earlier conflicting rules) */
+.site-header,
+.topbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 120 !important;
+}
+
+.music-tabs,
+.filter-tabs {
+  position: sticky !important;
+  top: 66px !important;
+  z-index: 110 !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: space-between !important;
+  align-items: stretch !important;
+  gap: 5px !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: 0 !important;
+  padding: 9px 8px 11px !important;
+  background: linear-gradient(110deg, rgba(5,11,23,.97), rgba(10,28,57,.97) 55%, rgba(28,24,63,.97)) !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(137,169,255,.12) !important;
+  border-bottom: 1px solid rgba(137,169,255,.30) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,.18) !important;
+  backdrop-filter: blur(22px) !important;
+  -webkit-backdrop-filter: blur(22px) !important;
+  overflow-x: auto !important;
+  scrollbar-width: none !important;
+}
+
+.music-tabs::-webkit-scrollbar,
+.filter-tabs::-webkit-scrollbar { display: none !important; }
+
+.music-tabs .tab-button {
+  box-sizing: border-box !important;
+  flex: 1 0 0 !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  padding: 0 3px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  border-radius: 999px !important;
+  font-size: clamp(9px, 2.7vw, 12px) !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.music-tabs .tab-button span { margin-left: 2px; }
+.music-tabs .search-tab-button {
+  color: #d4f5ff !important;
+  background: rgba(255,255,255,.07) !important;
+  border: 1px solid rgba(173,204,255,.24) !important;
+}
+.music-tabs .tab-button.active {
+  color: #fff !important;
+  background: linear-gradient(135deg,#785aff,#378eff) !important;
+  border: 1px solid rgba(182,190,255,.7) !important;
+  box-shadow: 0 6px 20px rgba(91,99,255,.25) !important;
+}
+
+@media (min-width: 600px) {
+  .music-tabs, .filter-tabs { top: 66px !important; }
+  .music-tabs .tab-button { font-size: 12px !important; }
+}
+
+
+/* ZG MEMORY FINAL NAV FIX — full viewport edge-to-edge, header-matched glass */
+.site-header,
+.topbar {
+  background: linear-gradient(110deg, rgba(5,11,23,.97), rgba(10,28,57,.97) 55%, rgba(28,24,63,.97)) !important;
+  border-bottom: 1px solid rgba(137,169,255,.30) !important;
+}
+
+.music-tabs {
+  position: sticky !important;
+  top: 66px !important;
+  left: calc((100% - 100vw) / 2) !important;
+  z-index: 125 !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+  gap: 8px !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  min-width: 100vw !important;
+  margin: 0 !important;
+  padding: 10px 12px 12px !important;
+  box-sizing: border-box !important;
+  background: linear-gradient(110deg, rgba(5,11,23,.97), rgba(10,28,57,.97) 55%, rgba(28,24,63,.97)) !important;
+  border: 0 !important;
+  border-top: 1px solid rgba(137,169,255,.12) !important;
+  border-bottom: 1px solid rgba(137,169,255,.30) !important;
+  border-radius: 0 !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,.18) !important;
+  backdrop-filter: blur(22px) !important;
+  -webkit-backdrop-filter: blur(22px) !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+.music-tabs::-webkit-scrollbar { display: none !important; }
+
+.music-tabs .tab-button {
+  box-sizing: border-box !important;
+  flex: 0 0 112px !important;
+  width: 112px !important;
+  min-width: 112px !important;
+  max-width: 112px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  margin: 0 !important;
+  padding: 0 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.music-tabs .search-tab-button {
+  color: #d4f5ff !important;
+  background: rgba(255,255,255,.07) !important;
+  border: 1px solid rgba(173,204,255,.24) !important;
+}
+.music-tabs .tab-button.active {
+  color: #fff !important;
+  background: linear-gradient(135deg,#785aff,#378eff) !important;
+  border: 1px solid rgba(182,190,255,.7) !important;
+  box-shadow: 0 6px 20px rgba(91,99,255,.25) !important;
+}
+@media (max-width: 600px) {
+  .music-tabs .tab-button {
+    flex-basis: 112px !important;
+    width: 112px !important;
+    min-width: 112px !important;
+    max-width: 112px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    font-size: 12px !important;
+  }
+}
